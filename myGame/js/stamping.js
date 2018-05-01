@@ -1,14 +1,3 @@
-// define globals
-var game;
-var stageTimer;
-
-window.onload = function() {
-	game = new Phaser.Game(800,800, Phaser.AUTO);
-	// define states
-	game.state.add('stamping', stamping);
-	game.state.start('stamping');
-}
-
 
 var stamping = function(){}
 stamping.prototype = {
@@ -27,5 +16,4 @@ stamping.prototype = {
 	update: function(){
 		//nice
 	}
-
 }
