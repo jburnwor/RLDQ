@@ -1,10 +1,11 @@
 //states would like to look @ game
 var game;
 //a couple of global
-var score;
-var health;
+var score = 0 ;
+var health = 100;
 window.onload = function () {
-	game = new Phaser.Game(960, 640, Phaser.AUTO);
+	game = new Phaser.Game(512, 512, Phaser.AUTO);
 	// states
-	
+	game.state.add('stamping', stamping);
+	game.state.start('stamping');	
 }
