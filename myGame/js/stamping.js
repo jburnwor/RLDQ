@@ -55,8 +55,7 @@ stamping.prototype = {
 
 		//to display the score
 		scoreDisplay = new Score();
-		//healthDisplay = new Health();   //this doesnt work right yet
-
+		healthDisplay = new Health;
 	},
 	update: function(){
 		if(returnStamp.intersects(stamp.getBounds())){
@@ -78,6 +77,7 @@ stamping.prototype = {
 		game.debug.body(bin);
 		//we use this to draw the return range
 		game.debug.geom(returnStamp,'rgba(255,0,0,20)',false);
+		game.debug.geom(healthDisplay);
 	},
 	createSheet: function(){
 		this.sheet = this.add.sprite(paper.centerX,paper.y,'sheet');
