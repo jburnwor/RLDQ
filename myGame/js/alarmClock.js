@@ -1,9 +1,25 @@
+
+//this is adapted from the google webfonts phaser example
+WebFontConfig = {
+
+    //  'active' means all requested fonts have finished loading
+    //  We set a 1 second delay before calling 'createText'.
+    //  For some reason if we don't the browser cannot render the text the first time it's created.
+    active: function() { game.time.events.add(Phaser.Timer.SECOND, function(){}, this); },
+
+    //  The Google Fonts we want to load (specify as many as you like in the array)
+    google: {
+      families: ['Orbitron']
+    }
+
+};
 var alarmClock = function(){}
 alarmClock.prototype = {
 	preload: function(){
 		this.load.path = 'assets/img/alarmClock/';
 		this.load.image('clock','clockTemp.png');
-		this.load.image('finger','fingerTemp.png')
+		this.load.image('finger','fingerTemp.png');
+		game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 	},
 	create: function(){
 		game.physics.startSystem(Phaser.Physics.ARCADE);	
@@ -28,7 +44,8 @@ alarmClock.prototype = {
 		time = 0;
 		dayTrack = 0;
 		amPM = ['AM','PM'];
-		clockTime = this.add.text(clock.centerX-64,clock.centerY-64,"00:00   " + amPM[dayTrack%2],{fontSize: '32px', fill: 'White'});
+		clockTime = this.add.text(clock.centerX+20,clock.centerY-64,"00:00   " + amPM[dayTrack%2],{font: 'Orbitron',fontSize: '32px', fill: 'White'});
+		clockTime.anchor.setTo(1,0);
 
 		//finger
 		finger = this.add.sprite(0,0,'finger');
