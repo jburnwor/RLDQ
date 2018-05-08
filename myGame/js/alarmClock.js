@@ -31,6 +31,11 @@ alarmClock.prototype = {
 		stageTimer.add(30000,this.checkTime,this);
 		stageTimer.start();
 
+		score+=300;
+		scoreTimer = game.time.create(false);
+		scoreTimer.loop(100,function(){score-=1},this);
+		scoreTimer.start();
+
 		
 		bg = this.add.sprite(0,0,'bg');
 
@@ -53,10 +58,10 @@ alarmClock.prototype = {
 		lamp = this.add.sprite(0,0,'lamp');
 		
 		//text for now
-		time = 0;
+		time = 12;
 		dayTrack = 0;
 		amPM = ['AM','PM'];
-		clockTime = this.add.text(clock.centerX+110,clock.centerY-32,"00:00   " + amPM[dayTrack%2],{font: 'Orbitron',fontSize: '36px', fill: 'White'});
+		clockTime = this.add.text(clock.centerX+110,clock.centerY-32,"00:00   " + amPM[0],{font: 'Orbitron',fontSize: '36px', fill: 'White'});
 		clockTime.anchor.setTo(1,0);
 
 		//finger
@@ -73,7 +78,9 @@ alarmClock.prototype = {
 		fingerBounds = new Phaser.Rectangle(finger.x-(finger.width/2),0,finger.width,button.y);
 		finger.input.boundsRect = fingerBounds;
 
+		//variables that we want outside of updateClock so they don't reset
 		overlapped = false;
+		wrapped = true;
 		//since the event doesn't start the first time we'll just trigger it manually
 		doOnce = true;
 
@@ -98,22 +105,27 @@ alarmClock.prototype = {
 
 	updateClock: function(){
 		if(!overlapped){
-			var wrapped;
 			overlapped = true;
 			if(!doOnce){
 					time = time + game.rnd.integerInRange(1,4);		
 			}
 			if(time==12){
+				if(!doOnce){
 					dayTrack++;
+				}
 					wrapped = true;
+					console.log(wrapped);
 			}
 			else if(time>12){
+				console.log(wrapped);
 					if(!wrapped){
 						dayTrack++;
 					}
 					time = time%12;
 					wrapped = false;
+				console.log(wrapped);
 			}
+
 			if(time<10){
 				clockTime.text = "0"+time+":00   " + amPM[dayTrack%2];
 				console.log(time);
@@ -142,12 +154,11 @@ alarmClock.prototype = {
 	checkTime: function(){
 		if((time == 8) && dayTrack%2 == 0){
 			console.log('right time' + time +' '+amPM[dayTrack%2]);
-			score+=50;
 			game.state.start('stamping');
 		}
 		else{
 			console.log('wrong time' + time +' '+amPM[dayTrack%2]);
-			health-=10;
+			health-=25;
 			game.state.start('stamping');
 		}
 	}
