@@ -7,7 +7,8 @@ window.onload = function () {
 	game = new Phaser.Game(512, 512, Phaser.AUTO);
 	// states
 	game.state.add('stamping', stamping);
+	game.state.add('brushing', brushing);
 	game.state.add('alarmClock',alarmClock);
-	game.state.add('bed',bed);
-	game.state.start('bed');	
+	game.state.add('bed',bed);	
+	game.state.start('brushing');
 }
