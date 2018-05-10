@@ -52,7 +52,7 @@ brushing.prototype = {
 
 		//timer for the stage
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000, function () { console.log('timer') }, game);
+		stageTimer.add(30000, function () { console.log('timer'), game.state.start('stamping')}, game);
 		stageTimer.start();
 
 	},
@@ -76,9 +76,9 @@ brushing.prototype = {
 
 	render: function () {
 
-		game.debug.bodyInfo(brush, 32, 32);
+		//game.debug.bodyInfo(brush, 32, 32);
 
-		game.debug.body(brush);
+		//game.debug.body(brush);
 
 	}
 }

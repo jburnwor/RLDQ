@@ -1,5 +1,7 @@
 var Score = function(){
-	Phaser.Text.call(this,game,16,16,'Score: ' + score, {fontSize: '48px', fill: 'White'});
+	Phaser.Text.call(this,game,16,16,'Score: ' + score, {fontSize: '32px', fill: 'White'});
+	this.stroke = '#000000';
+    this.strokeThickness = 3;
 	game.add.existing(this);
 }
 Score.prototype = Object.create(Phaser.Text.prototype);

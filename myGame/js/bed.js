@@ -97,12 +97,14 @@ bed.prototype = {
 		game.add.tween(lights).to({ alpha: 1 }, 1, "Linear", true);
 		off = true;
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000,function(){console.log('fired')},game);
+		stageTimer.add(30000,function(){console.log('fired'), game.state.start('brushing',true,false)},game);
 		stageTimer.start();
 	},
 	collide: function(){
 		if(game.physics.arcade.overlap(player,bed)){
 			console.log('yay');
+			game.state.start('brushing');
+			score+=100;
 		}
 		if(game.physics.arcade.collide(player, things)){
 			health-=2;

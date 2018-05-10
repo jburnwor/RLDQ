@@ -20,7 +20,7 @@ stamping.prototype = {
 
 		//create 30 second timer for the stage
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000,function(){console.log('fired')},game);
+		stageTimer.add(30000,function(){console.log('fired'), game.state.start('alarmClock')},game);
 		stageTimer.start();
 
 		//add paper stack
@@ -73,11 +73,10 @@ stamping.prototype = {
 		this.enterBin();
 	},
 	render: function(){
-		game.debug.body(paper);
-		game.debug.body(bin);
+		//game.debug.body(paper);
+		//game.debug.body(bin);
 		//we use this to draw the return range
 		game.debug.geom(returnStamp,'rgba(255,0,0,20)',false);
-		game.debug.geom(healthDisplay);
 	},
 	createSheet: function(){
 		this.sheet = this.add.sprite(paper.centerX,paper.y,'sheet');

@@ -154,12 +154,12 @@ alarmClock.prototype = {
 	checkTime: function(){
 		if((time == 8) && dayTrack%2 == 0){
 			console.log('right time' + time +' '+amPM[dayTrack%2]);
-			game.state.start('stamping');
+			game.state.start('bed');
 		}
 		else{
 			console.log('wrong time' + time +' '+amPM[dayTrack%2]);
 			health-=25;
-			game.state.start('stamping');
+			game.state.start('bed');
 		}
 	}
 }
