@@ -5,5 +5,5 @@ var Score = function(){
 Score.prototype = Object.create(Phaser.Text.prototype);
 Score.prototype.constructor = Score;
 Score.prototype.update = function() {
-	this.text = 'Score: ' + score;
+	this.text = 'Score: ' + Math.floor(score);
 }
