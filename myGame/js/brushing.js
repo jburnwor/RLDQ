@@ -13,6 +13,9 @@ brushing.prototype = {
 		this.load.image('teeth', 'teeth.png');
 		this.load.image('brush', 'tempBrush.png');
 
+		this.load.path = 'assets/audio/';
+		this.load.audio('damaged',['damaged.ogg']);
+
 	},
 
 	create: function () {

@@ -22,6 +22,9 @@ alarmClock.prototype = {
 		this.load.image('bg','bg.png');
 		this.load.image('lamp','lamp.png');
 		this.load.image('button','masterButton.png');	
+
+		this.load.path = 'assets/audio/';
+		this.load.audio('click',['click.ogg']);
 	},
 	create: function(){
 		game.physics.startSystem(Phaser.Physics.ARCADE);	
@@ -30,6 +33,9 @@ alarmClock.prototype = {
 		stageTimer = game.time.create(false);
 		stageTimer.add(30000,this.checkTime,this);
 		stageTimer.start();
+
+		storedScore = score;
+		console.log(storedScore);
 
 		score+=300;
 		scoreTimer = game.time.create(false);
@@ -72,11 +78,12 @@ alarmClock.prototype = {
 		finger.input.enableDrag(false);
 		finger.input.allowHorizontalDrag = false;
 		game.physics.arcade.enable(finger);
-		finger.body.checkCollision.left = false;
-		finger.body.checkCollision.up = false;
-		finger.body.checkCollision.right = false;
 		fingerBounds = new Phaser.Rectangle(finger.x-(finger.width/2),0,finger.width,button.y);
 		finger.input.boundsRect = fingerBounds;
+
+
+		clickSound = game.add.audio('click');
+		damagedSound = game.add.audio('damaged');
 
 		//variables that we want outside of updateClock so they don't reset
 		overlapped = false;
@@ -107,7 +114,8 @@ alarmClock.prototype = {
 		if(!overlapped){
 			overlapped = true;
 			if(!doOnce){
-					time = time + game.rnd.integerInRange(1,4);		
+					time = time + game.rnd.integerInRange(1,4);
+					clickSound.play('',0,1,false);		
 			}
 			if(time==12){
 				if(!doOnce){
@@ -139,26 +147,26 @@ alarmClock.prototype = {
 
 	buttonPress: function(){
 		if(game.physics.arcade.collide(finger,button)){
-			
-
-			this.updateClock();
-
-	
+			this.updateClock();	
 		}
 		else if(!game.physics.arcade.collide(finger,button)){
-			overlapped = false;
-			
+			overlapped = false;			
 		}
 	},
 
 	checkTime: function(){
+		//correct time
 		if((time == 8) && dayTrack%2 == 0){
-			console.log('right time' + time +' '+amPM[dayTrack%2]);
+			clickSound.play('',0,1,false);
 			game.state.start('bed');
+			score+=10;
 		}
+		//wrong time
 		else{
-			console.log('wrong time' + time +' '+amPM[dayTrack%2]);
+			clickSound.play('',0,1,false);
+			damagedSound.play('',0,1,false);
 			health-=25;
+			score = storedScore;
 			game.state.start('bed');
 		}
 	}

@@ -55,6 +55,8 @@ bed.prototype = {
 		game.physics.arcade.enable(bed);
 		bed.scale.setTo(1,2);
 
+		damagedSound = game.add.audio('damaged');
+
 
 		//add some movement keys
 		up = game.input.keyboard.addKey(Phaser.Keyboard.W);
@@ -108,6 +110,7 @@ bed.prototype = {
 		}
 		if(game.physics.arcade.collide(player, things)){
 			health-=2;
+			damagedSound.play('',0,1,false);
 		}
 	}
 }
