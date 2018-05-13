@@ -108,7 +108,7 @@ function Teeth(game, frame, startx, starty, flip) {
 	// add custom properties
 	this.anchor.set(0.5);
 
-	this.tint = tint;
+	this.tint = String(0xFFFF00);
 
 	if (flip) {
 		this.scale.y *= -1;
