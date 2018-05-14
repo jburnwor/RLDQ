@@ -8,5 +8,8 @@ window.onload = function () {
 	// states
 	game.state.add('stamping', stamping);
 	game.state.add('brushing', brushing);
-	game.state.start('stamping');	
+	game.state.add('alarmClock',alarmClock);
+	game.state.add('bed',bed);	
+	game.state.add('menu', menu);
+	game.state.start('menu');
 }

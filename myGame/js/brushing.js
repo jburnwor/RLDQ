@@ -1,10 +1,13 @@
 var brush;
+var mouth;
 var lastPos;
 var tintNum = 0;
 var tint = String(0xFFFF00);
 console.log(this.tint);
 
-var brushing = function () { }
+var brushing = function () {
+	this.teethGroup
+ }
 brushing.prototype = {
 	preload: function () {
 		this.load.path = 'assets/img/brushing/';
@@ -12,6 +15,9 @@ brushing.prototype = {
 		this.load.image('mouth', 'mouth.png');
 		this.load.image('teeth', 'teeth.png');
 		this.load.image('brush', 'tempBrush.png');
+
+		this.load.path = 'assets/audio/';
+		this.load.audio('damaged',['damaged.ogg']);
 
 	},
 
@@ -23,24 +29,29 @@ brushing.prototype = {
 
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 
+		//create the background
 		var bg = this.add.sprite(0, 0, 'bg');
 
 		//initializes the teethGroup group for the ground and ledges
-		teethGroup = game.add.group();
+		this.teethGroup = game.add.physicsGroup();
 
 		for (var i = 1; i <= 16; i++) {
 			if (i <= 8) {
-				tooth = teethGroup.add(new Teeth(game, 'teeth', (x + 64), y, false));
+				//tooth = new Teeth(game, 'teeth', (x + 64), y, false);
+				tooth = this.teethGroup.add(new Teeth(game, 'teeth', (x + 64), y, false));
 				x += 65;
 				game.add.existing(tooth);
 			} else {
-				tooth = teethGroup.add(new Teeth(game, 'teeth', x - yGap + 64, y + teethGap, true));
+				//tooth = new Teeth(game, 'teeth', x - yGap + 64, y + teethGap, true);
+				tooth = this.teethGroup.add(new Teeth(game, 'teeth', x - yGap + 64, y + teethGap, true));
 				x += 65;
 				game.add.existing(tooth);
 			}
 		}
 
-		var mouth = this.add.sprite(0, 0, 'mouth');
+		mouth = this.add.sprite(0, 0, 'mouth');
+		//mouth.enableBody = true;
+	//	mouth.body.immovable = true;
 
 		brush = this.add.sprite(200, 200, 'brush');
 		game.physics.enable(brush);
@@ -49,22 +60,28 @@ brushing.prototype = {
 
 		//to display the score
 		scoreDisplay = new Score();
+		healthDisplay = new Health();
 
 		//timer for the stage
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000, function () { console.log('timer') }, game);
+		stageTimer.add(30000, function () { console.log('timer'), game.state.start('stamping')}, game);
 		stageTimer.start();
 
 	},
 	update: function () {
 
 		//if the mouse is moving back and forth, give points
-		if (backForth(game) && game.physics.arcade.overlap(brush, teethGroup)) {
+		if (backForth(game) && (game.physics.arcade.overlap(brush, this.teethGroup))) { //brush.overlap(mouth)
+			health -= 2;
+		}else if(backForth(game)){
 			//add points
 			score += 0.1;
+			
 		}
 		//move brush to pointer
-		game.physics.arcade.moveToPointer(brush, 1000);
+		brush.x = this.game.input.mousePointer.x;
+		brush.y = this.game.input.mousePointer.y;
+		
 
 		//  if brush is overlaping pointer, don't move any more
 		if (Phaser.Rectangle.contains(brush.body, game.input.x, game.input.y)) {
@@ -76,9 +93,9 @@ brushing.prototype = {
 
 	render: function () {
 
-		game.debug.bodyInfo(brush, 32, 32);
+		//game.debug.bodyInfo(brush, 32, 32);
 
-		game.debug.body(brush);
+		//game.debug.body(brush);
 
 	}
 }
@@ -91,7 +108,7 @@ function Teeth(game, frame, startx, starty, flip) {
 	// add custom properties
 	this.anchor.set(0.5);
 
-	this.tint = tint;
+	this.tint = String(0xFFFF00);
 
 	if (flip) {
 		this.scale.y *= -1;
@@ -99,7 +116,7 @@ function Teeth(game, frame, startx, starty, flip) {
 
 
 	//enable physics
-	game.physics.enable(this);
+	game.physics.arcade.enable(this);
 	this.body.immovable = true;
 }
 // define prefab's prototype and constructor
@@ -112,7 +129,7 @@ Teeth.prototype.update = function () {
 		if (tintNum % 3 == 0) {
 			if (this.tint < 16777200) {
 				this.tint ++;this.tint ++;this.tint ++;this.tint ++;
-				this.tint ++;this.tint ++;this.tint ++;this.tint ++;
+				//this.tint ++;this.tint ++;this.tint ++;this.tint ++;
 				tint = this.tint;
 			}
 		}
@@ -124,7 +141,7 @@ Teeth.prototype.update = function () {
 }
 
 function backForth(game) {
-	//checks so player has to move mouse back and forth to get points
+	//checks so player has to move mouse back and forth 
 	if (lastPos > 0) {
 		if (game.input.speed.x > 0) {
 			//no points
