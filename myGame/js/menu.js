@@ -14,6 +14,7 @@ menu.prototype = {
         this.load.image('start', 'start.png');
         this.load.image('exit', 'exit.png');
         this.load.image('selector', 'selector.png');
+        this.stage.disableVisibilityChange = true;
 
     },
 
