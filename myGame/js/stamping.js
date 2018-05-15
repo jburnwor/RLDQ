@@ -12,6 +12,7 @@ stamping.prototype = {
 		this.load.audio('pickPaper',['pickPaper.ogg']);
 		this.load.audio('placePaper',['placePaper.ogg']);
 		this.load.audio('damaged',['damaged.ogg']);
+
 	},
 	create: function(){
 		console.log('stamping: create');
@@ -49,13 +50,11 @@ stamping.prototype = {
 		bin.anchor.setTo(0.5,0);
 
 		if(day==1){
-			arrow1 = this.add.sprite(game.world.centerX+102,game.world.centerY,'stampAtlas','instructionArrow001');
-			arrow1.anchor.setTo(0.5,0.5);
-			arrow1.animations.add('arrow1',Phaser.Animation.generateFrameNames('instructionArrow',1, 4, '',3), 6 ,true);
-			arrow1.animations.play('arrow1');
+			arrow = this.add.sprite(game.world.centerX+102,game.world.centerY,'stampAtlas','instructionArrow001');
+			arrow.anchor.setTo(0.5,0.5);
+			arrow.animations.add('arrow',Phaser.Animation.generateFrameNames('instructionArrow',1, 4, '',3), 6 ,true);
+			arrow.animations.play('arrow');
 		}
-
-
 
 
 		stampedSound = game.add.audio('stamped');
@@ -163,17 +162,17 @@ stamping.prototype = {
 
 	tutorial: function(){
 		if(this.firstTryStamp&&!this.topSheet){
-			arrow1.scale.setTo(-1,1);
+			arrow.scale.setTo(-1,1);
 		}
 		if(this.firstTryStamp&&!this.topSheet&&this.returned){
-			arrow1.x = game.world.centerX - 90;
-			arrow1.scale.setTo(1,1);
+			arrow.x = game.world.centerX - 90;
+			arrow.scale.setTo(1,1);
 			this.firstTryStamp = false;
 		}
 		if(this.firstTryBin&&this.topSheet&&this.returned&&!this.scoreAble){
-			arrow1.x = game.world.centerX;
-			arrow1.scale.setTo(1,1);
-			arrow1.destroy();
+			arrow.x = game.world.centerX;
+			arrow.scale.setTo(1,1);
+			arrow.destroy();
 			this.firstTryBin = false;
 		}
 	}
