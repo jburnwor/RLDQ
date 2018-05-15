@@ -99,12 +99,13 @@ bed.prototype = {
 		game.add.tween(lights).to({ alpha: 1 }, 1, "Linear", true);
 		off = true;
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000,function(){console.log('fired'), game.state.start('brushing',true,false)},game);
+		stageTimer.add(30000,function(){day++, game.state.start('brushing',true,false),console.log(day)},game);
 		stageTimer.start();
 	},
 	collide: function(){
 		if(game.physics.arcade.overlap(player,bed)){
 			console.log('yay');
+			day++;
 			game.state.start('brushing');
 			score+=100;
 		}
@@ -112,5 +113,6 @@ bed.prototype = {
 			health-=2;
 			damagedSound.play('',0,1,false);
 		}
-	}
+	},
+
 }
