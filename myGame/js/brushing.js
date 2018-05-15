@@ -3,21 +3,21 @@ var mouth;
 var lastPos;
 var tintNum = 0;
 var tint = String(0xFFFF00);
-console.log(this.tint);
 
 var brushing = function () {
-	this.teethGroup
- }
+	this.gumsEmitter;
+}
 brushing.prototype = {
 	preload: function () {
 		this.load.path = 'assets/img/brushing/';
 		this.load.image('bg', 'background_color.png');
 		this.load.image('mouth', 'mouth.png');
 		this.load.image('teeth', 'teeth.png');
-		this.load.image('brush', 'tempBrush.png');
+		this.load.image('brush', 'brush.png');
+		this.load.image('blood', 'blood.png');
 
 		this.load.path = 'assets/audio/';
-		this.load.audio('damaged',['damaged.ogg']);
+		this.load.audio('damaged', ['damaged.ogg']);
 
 	},
 
@@ -32,18 +32,14 @@ brushing.prototype = {
 		//create the background
 		var bg = this.add.sprite(0, 0, 'bg');
 
-		//initializes the teethGroup group for the ground and ledges
-		this.teethGroup = game.add.physicsGroup();
 
 		for (var i = 1; i <= 16; i++) {
 			if (i <= 8) {
-				//tooth = new Teeth(game, 'teeth', (x + 64), y, false);
-				tooth = this.teethGroup.add(new Teeth(game, 'teeth', (x + 64), y, false));
+				tooth = new Teeth(game, 'teeth', (x + 64), y, false);
 				x += 65;
 				game.add.existing(tooth);
 			} else {
-				//tooth = new Teeth(game, 'teeth', x - yGap + 64, y + teethGap, true);
-				tooth = this.teethGroup.add(new Teeth(game, 'teeth', x - yGap + 64, y + teethGap, true));
+				tooth = new Teeth(game, 'teeth', x - yGap + 64, y + teethGap, true);
 				x += 65;
 				game.add.existing(tooth);
 			}
@@ -51,12 +47,15 @@ brushing.prototype = {
 
 		mouth = this.add.sprite(0, 0, 'mouth');
 		//mouth.enableBody = true;
-	//	mouth.body.immovable = true;
+		//	mouth.body.immovable = true;
 
 		brush = this.add.sprite(200, 200, 'brush');
 		game.physics.enable(brush);
-		brush.body.setSize(20, 64, 50, 0);
+		brush.body.setSize(20, 45, 50, 0);
 		brush.anchor.set(0.15, 0.5);
+
+
+		allTeeth = new Phaser.Rectangle(23, 200, 460, 120);
 
 		//to display the score
 		scoreDisplay = new Score();
@@ -64,24 +63,32 @@ brushing.prototype = {
 
 		//timer for the stage
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000, function () { console.log('timer'), game.state.start('stamping')}, game);
+		stageTimer.add(30000, function () { console.log('timer'), game.state.start('stamping') }, game);
 		stageTimer.start();
 
+		this.gumsEmitter = game.add.emitter(0, 0, 200);
+		this.gumsEmitter.makeParticles('blood');			// image used for particles
+		this.gumsEmitter.gravity = 200;
 	},
 	update: function () {
-
 		//if the mouse is moving back and forth, give points
-		if (backForth(game) && (game.physics.arcade.overlap(brush, this.teethGroup))) { //brush.overlap(mouth)
-			health -= 2;
-		}else if(backForth(game)){
+		if (backForth(game) && !(allTeeth.intersects(brush.getBounds()))) {
+			health -= 0.5;
+
+
+			this.gumsEmitter.x = brush.x;
+			this.gumsEmitter.y = brush.y;
+			this.gumsEmitter.start(true, 200, null, 200);	// (explode, lifespan, freq, quantity)
+
+		} else if (backForth(game)) {
 			//add points
 			score += 0.1;
-			
+
 		}
 		//move brush to pointer
 		brush.x = this.game.input.mousePointer.x;
 		brush.y = this.game.input.mousePointer.y;
-		
+
 
 		//  if brush is overlaping pointer, don't move any more
 		if (Phaser.Rectangle.contains(brush.body, game.input.x, game.input.y)) {
@@ -95,7 +102,9 @@ brushing.prototype = {
 
 		//game.debug.bodyInfo(brush, 32, 32);
 
-		//game.debug.body(brush);
+		game.debug.body(brush);
+
+		//game.debug.geom(allTeeth, '#ff0000', false);
 
 	}
 }
@@ -128,7 +137,7 @@ Teeth.prototype.update = function () {
 	if (game.physics.arcade.overlap(this, brush)) {
 		if (tintNum % 3 == 0) {
 			if (this.tint < 16777200) {
-				this.tint ++;this.tint ++;this.tint ++;this.tint ++;
+				this.tint++; this.tint++; this.tint++; this.tint++;
 				//this.tint ++;this.tint ++;this.tint ++;this.tint ++;
 				tint = this.tint;
 			}
