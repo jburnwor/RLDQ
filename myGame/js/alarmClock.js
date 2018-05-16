@@ -66,7 +66,7 @@ alarmClock.prototype = {
 		time = 12;
 		dayTrack = 0;
 		amPM = ['AM','PM'];
-		clockTime = game.add.bitmapText(clock.centerX+110,clock.centerY-32,"font", '00:00   ' + amPM[0], 60);
+		clockTime = game.add.bitmapText(clock.centerX+112,clock.centerY-24,"font", '00:00 ' + amPM[0], 78);
 		clockTime.anchor.setTo(1,0);
 
 		//finger
@@ -122,11 +122,6 @@ alarmClock.prototype = {
 		this.buttonPress();
 
 	},
-	render: function(){
-		//game.debug.body(button);
-		//game.debug.body(finger);
-		//game.debug.geom(fingerBounds);
-	},
 
 	updateClock: function(){
 		if(!overlapped){
@@ -157,11 +152,11 @@ alarmClock.prototype = {
 			}
 
 			if(time<10){
-				clockTime.text ="0"+time+":00   " + amPM[dayTrack%2];
+				clockTime.text ="0"+time+":00 " + amPM[dayTrack%2];
 				console.log(clockTime.text);
 			}
 			else{
-				clockTime.text = time +":00   " + amPM[dayTrack%2];
+				clockTime.text = time +":00 " + amPM[dayTrack%2];
 				console.log(time);
 			}
 		}
