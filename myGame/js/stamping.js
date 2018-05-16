@@ -23,7 +23,7 @@ stamping.prototype = {
 
 		//create 30 second timer for the stage
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000,function(){console.log('fired'), game.state.start('alarmClock')},game);
+		stageTimer.add(30000,function(){game.state.start('alarmClock')},game);
 		stageTimer.start();
 
 		//add paper stack
@@ -40,14 +40,16 @@ stamping.prototype = {
 		game.physics.arcade.enable(stamp);
 		stamp.input.boundsRect = bg.getBounds();
 
+		//create an area for the stamp
 		returnStamp = new Phaser.Rectangle(stamp.body.x,stamp.body.y,stamp.width,stamp.height);
     	
 
 		//add bin for finished stamps
-		bin = this.add.sprite(game.world.centerX-180,game.world.centerY-10,'stampAtlas','tray001');
+		bin = this.add.sprite(game.world.centerX-180,game.world.centerY-10,'stampAtlas','trayEmpty');
 		game.physics.arcade.enable(bin);
 		bin.anchor.setTo(0.5,0);
 
+		//this is the tutorial sprite that appears for the first actions on day 1
 		if(day==1){
 			arrow1 = this.add.sprite(game.world.centerX+102,game.world.centerY,'stampAtlas','instructionArrow001');
 			arrow1.anchor.setTo(0.5,0.5);
@@ -55,59 +57,66 @@ stamping.prototype = {
 			arrow1.animations.play('arrow1');
 		}
 
-
-
-
+		//initialize the sound effects in the game
 		stampedSound = game.add.audio('stamped');
 		pickPaperSound = game.add.audio('pickPaper');
 		placePaperSound = game.add.audio('placePaper');
 		damagedSound = game.add.audio('damaged');
 
-		//variables to make sure creation and scoring only happen once per action
+		//variables to track the first actions for the tutorial
 		this.firstTryStamp = true;
 		this.firstTryBin = true;
+		//variable to track the current image we're on
 		this.sheetTrack = 1;
+		//these two variables are to make sure things only happen once during update
 		this.topSheet = true;
 		this.scoreAble = true;
+		//condition to if the player scores or loses health
 		this.returned = true;
+		//the color the return area
 		this.returnColor = 'rgba(0,255,0,20)';
 
-		//to display the score
+		//to display the score and Health
 		scoreDisplay = new Score();
-		healthDisplay = new Health;
+		healthDisplay = new Health();
 	},
 	update: function(){
 		if(returnStamp.intersects(stamp.getBounds())){
+			//if the stamp is back change return area to green
 			this.returnColor = 'rgba(0,255,0,20)';
 		  	this.returned = true;
 		}
 
 		else{
+			//if not make it red
 			this.returnColor = 'rgba(255,0,0,20)';
 			this.returned = false;
 		}
 
+		//display the tutorial if it's day 1
 		if(day==1){
 			this.tutorial();
 		}
 
-
+		//stamp the paper when the stamp intersects the stack of papers
 		if(game.physics.arcade.collide(stamp,paper)&&this.topSheet){
 			this.topSheet=false;
 			this.createSheet();
 			stampedSound.play('',0,0.75,false);		
 		}
+		//place the stamped paper into the bin
 		if(game.physics.arcade.overlap(this.sheet,bin)){
 			this.enterBin();
 		}
 	},
+
 	render: function(){
-		//game.debug.body(paper);
-		//game.debug.body(bin);
-		//we use this to draw the return range
+		//we use this to draw the return area
 		game.debug.geom(returnStamp,this.returnColor,false);
 	},
+
 	createSheet: function(){
+		//this is if else chain changes the current sprite of the paper stack and the paper sheet
 		if(this.sheetTrack%3==1){
 			this.sheet = this.add.sprite(paper.centerX,paper.y+34,'stampAtlas','paperStamped001');
 			paper.loadTexture('stampAtlas','paper002');
@@ -121,34 +130,41 @@ stamping.prototype = {
 			paper.loadTexture('stampAtlas','paper001');
 		}
 		
+		//so we can check it if collides with the bin
 		game.physics.arcade.enable(this.sheet);
 
-
-
-
 		this.sheet.anchor.setTo(0.5,0.5);
+		//let us be able to drag it
 		this.sheet.inputEnabled = true;
 		this.sheet.input.enableDrag(true);
+		//play a sound
 		this.sheet.events.onDragStart.add(function(){pickPaperSound.play('',0,1,false)},this);
 		this.scoreAble = true;
 		this.sheetTrack++;
 	},
 	enterBin: function(){
+		//if they return the stamp before putting the sheet in they get point
 		if(this.returned){
-			this.sheet.body = false;
-			this.sheet.x = bin.x;
-			this.sheet.y = bin.y+36;
+			this.sheet.destroy();
 			this.topSheet = true;
-			this.sheet.input.draggable = false;
+			//change the tray sprite to reflect the last paper in
+			if(this.sheetTrack%3==2){
+				bin.loadTexture('stampAtlas','tray001');
+			}
+			else if(this.sheetTrack%3==0){
+				bin.loadTexture('stampAtlas','tray002');
+			}
+			else if(this.sheetTrack%3==1){
+				bin.loadTexture('stampAtlas','tray003');
+			}
 			if(this.scoreAble){
 				score += 10;
 				this.scoreAble = false;
 				placePaperSound.play('',0,2,false);
 			}
 		}
+		//if not they lose health and that sheet doesn't count
 		else {
-			//this.sheet.body.x = bin.x-(this.sheet.width/2);
-			//this.sheet.body.y = bin.y;
 			this.sheet.destroy();
 			this.topSheet = true;
 			this.sheet.input.draggable = false;
@@ -156,11 +172,11 @@ stamping.prototype = {
 				health -=5;
 				this.scoreAble = false;
 				damagedSound.play('',0,1,false);
-				placePaperSound.play('',0,2,false);
 			}
 		}
 	},
 
+	//display the tutorial sprite, going through each step.
 	tutorial: function(){
 		if(this.firstTryStamp&&!this.topSheet){
 			arrow1.scale.setTo(-1,1);
