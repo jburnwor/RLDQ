@@ -12,5 +12,5 @@ window.onload = function () {
 	game.state.add('alarmClock',alarmClock);
 	game.state.add('bed',bed);	
 	game.state.add('menu', menu);
-	game.state.start('menu');
+	game.state.start('alarmClock');
 }
