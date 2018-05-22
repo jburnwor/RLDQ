@@ -13,6 +13,9 @@ stamping.prototype = {
 		this.load.audio('placePaper',['placePaper.ogg']);
 		this.load.audio('damaged',['damaged.ogg']);
 
+		this.load.path = 'assets/fonts/';
+		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
+
 	},
 	create: function(){
 		console.log('stamping: create');
@@ -81,6 +84,7 @@ stamping.prototype = {
 
 		//to display the score and Health
 		scoreDisplay = new Score();
+		healthBG = new HealthBG();
 		healthDisplay = new Health();
 	},
 	update: function(){
@@ -96,11 +100,8 @@ stamping.prototype = {
 			this.returned = false;
 		}
 
-		//display the tutorial if it's day 1
-		if(day==1){
-			this.tutorial();
-		}
-
+		this.tutorial();
+		stamp.bringToTop();
 		//stamp the paper when the stamp intersects the stack of papers
 		if(game.physics.arcade.collide(stamp,paper)&&this.topSheet){
 			this.topSheet=false;
