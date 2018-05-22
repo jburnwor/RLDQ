@@ -16,7 +16,7 @@ bed.prototype = {
 		things.enableBody = true;
 
 		//spawn them
-		for(var i = 0; i<64;i++){
+		for(var i = 0; i<50;i++){
 			//give them a random position then realign them to a "grid"
 			xPos = game.rnd.integerInRange(0,game.world.width-32);
 			xPos = xPos - xPos%32
@@ -24,7 +24,7 @@ bed.prototype = {
 			yPos = yPos - yPos%32
 			//failsafe for when a block would spawn in or directly around the player
 			//without this the player can be killed instantly or trapped at the start
-			if((xPos==0&&yPos==game.world.height-32)||(xPos==0&&yPos==game.world.height-64)||(xPos==32&&yPos==game.world.height-32)){
+			if((xPos==0&&yPos==game.world.height-32)||(xPos==0&&yPos==game.world.height-64)||(xPos==32&&yPos==game.world.height-32)||(xPos==32&&yPos==game.world.height-64)){
 				yPos-=64;
 			}
 			item = things.create(xPos, yPos, 'player');
@@ -63,9 +63,13 @@ bed.prototype = {
     	down = game.input.keyboard.addKey(Phaser.Keyboard.S);
     	left = game.input.keyboard.addKey(Phaser.Keyboard.A);
     	right = game.input.keyboard.addKey(Phaser.Keyboard.D);
-
+    	upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    	downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+    	leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+    	rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
     	//show our UI
-		scoreDisplay = new Score();
+		//scoreDisplay = new Score();
+		healthBG = new HealthBG();
 		healthDisplay = new Health();
 		
 		//boolean to make sure the player can't move if the lights are still on
@@ -78,19 +82,19 @@ bed.prototype = {
 		this.collide();
 	},
 	move: function(){
-		if(up.justPressed()){
+		if(up.justPressed()||upKey.justPressed()){
 			player.body.y-=32;
 			//console.log(player.body.x,player.body.y);
 		}
-		else if(down.justPressed()){
+		else if(down.justPressed()||downKey.justPressed()){
 			player.body.y+=32;
 			//console.log(player.body.x,player.body.y);
 		}
-		else if(left.justPressed()){
+		else if(left.justPressed()||leftKey.justPressed()){
 			player.body.x-=32;
 			//console.log(player.body.x,player.body.y);
 		}
-		else if(right.justPressed()){
+		else if(right.justPressed()||rightKey.justPressed()){
 			player.body.x+=32;
 			//console.log(player.body.x,player.body.y);
 		}

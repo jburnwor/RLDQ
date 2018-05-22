@@ -1,10 +1,8 @@
 var Score = function(){
-	Phaser.Text.call(this,game,16,16,'Score: ' + score, {fontSize: '32px', fill: 'White'});
-	this.stroke = '#000000';
-    this.strokeThickness = 3;
+	Phaser.BitmapText.call(this,game,16,8,'font','Score: ' + score,52);
 	game.add.existing(this);
 }
-Score.prototype = Object.create(Phaser.Text.prototype);
+Score.prototype = Object.create(Phaser.BitmapText.prototype);
 Score.prototype.constructor = Score;
 Score.prototype.update = function() {
 	this.text = 'Score: ' + Math.floor(score);
