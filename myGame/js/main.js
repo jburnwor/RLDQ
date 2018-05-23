@@ -10,8 +10,9 @@ window.onload = function () {
 	game.state.add('stamping', stamping);
 	game.state.add('brushing', brushing);
 	game.state.add('alarmClock',alarmClock);
-	game.state.add('bed',bed);	
+	game.state.add('bed',bed);
+	game.state.add('code',code);	
 	game.state.add('menu', menu);
 	game.state.add('coffee', coffee);
-	game.state.start('coffee');
+	game.state.start('menu');
 }

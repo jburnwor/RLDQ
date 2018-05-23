@@ -1,47 +1,46 @@
-
-//this is adapted from the google webfonts phaser example
-WebFontConfig = {
-    //  'active' means all requested fonts have finished loading
-    //  We set a 2.5 second delay before calling 'createText' to make sure the browser can render it
-    active: function() { game.time.events.add(2500, function(){}, this); },
-    //  the font we want
-    google: {
-      families: ['Orbitron']
-    }
-};
 var code = function(){}
 code.prototype = {
 	preload: function(){
-		game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 		this.load.path = 'assets/img/writeCode/'
 		this.load.atlas('codeTextAtlas','codeTextAtlas.png','codeTextAtlas.json');
 		this.load.path = 'assets/fonts/';
 		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
 	},
 	create: function(){
+		//7 of 4,5,6,7, and 8 letter words
+		words = ['ADVISE','BEFORE','CREDIT','BUDGET','COSTLY','DEMAND','EQUITY','BOSS','CASH','CELL','COPY','DATA','KEPT','RULE',
+				'ACCURATE','BULLETIN','COMMERCE','CONSUMER','DOCUMENT','EVALUATE','FEEDBACK','ASSET','AUDIT','ORDER','SHIFT','USAGE',
+				'FOCUS','WORTH','ACCOUNT','BENEFIT','COMPANY','DEFICIT','ECONOMY','MANAGER','PENSION'];
 
+
+		stageTimer = game.time.create(false);
+		stageTimer.add(30000,function(){console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')},game);
+		stageTimer.start();
+
+		wordsNeeded = 5;
+
+		//here we add enter and backspace as keys the player can press
+		//onDown.add(function,context) does an action one time
 	 	backspace = this.game.input.keyboard.addKey(Phaser.KeyCode.BACKSPACE);
 	 	backspace.onDown.add(this.backSpace,this);
 	 	enter = this.game.input.keyboard.addKey(Phaser.KeyCode.ENTER);
 	 	enter.onDown.add(this.enterLetter,this);
 
-
-
+	 	//starting position of the "on screen keyboard"
 		var y = 400;
 		var x = 0;
+		//the letter they are on
 		index = 1;
+		//display a selection cursor
 		select = new Phaser.Rectangle(16,y,35,35);
 
 		for(var i = 1;i <=26; i++){
 			if(i<10){
 				var id = '0'+ i;
-				console.log(id);
 			}
 			else{
 				id = '' + i;
-				console.log(id);
 			}
-
 			if(i==14){
 				y = 460;
 				x = 0;
@@ -63,37 +62,65 @@ code.prototype = {
     	left = game.input.keyboard.addKey(Phaser.Keyboard.A);
     	right = game.input.keyboard.addKey(Phaser.Keyboard.D);
 
+    	scoreDisplay = new Score();
+
+    	scoreWord = words[Math.floor(Math.random() * words.length)];
+		typeThis = game.add.bitmapText(game.world.centerX-200,game.world.centerY-125,"font", 'TYPE: ' + scoreWord, 60);
+		amountDisplay = game.add.bitmapText(game.world.centerX-200,game.world.centerY-160,"font", 'WORDS LEFT: ' + wordsNeeded, 60);
+
 
 
 	},
 	update: function(){
 		this.move();
+		this.checkWord();
 	},
 	move: function(){
-		if(up.justPressed()&&index>13){
-			index-=13;
-			select.y-=60;
-			console.log(index);
+		//move our select cursor and allow it to wrap around the keyboard
+		if(up.justPressed()){
+			if(index<13){
+				index+=13;
+				select.y+=60;
+			}
+			else{
+				index-=13;
+				select.y-=60;
+			}
 		}
-		else if(down.justPressed()&&index<14){
-			index+=13;
-			select.y+=60;
-			console.log(index);
+		else if(down.justPressed()){
+			if(index>13){
+				index-=13;
+				select.y-=60;
+			}
+			else{
+				index+=13;
+				select.y+=60;
+			}
 		}
-		else if(left.justPressed()&&(index!=1 && index!= 14)){
-			index-=1;
-			select.x-=36;
-			console.log(index);
+		else if(left.justPressed()){
+			if(index == 1 || index == 14){
+				index+=12;
+				select.x+= (36*12);
+			}
+			else{
+				index-=1;
+				select.x-=36;
+			}
 		}
-		else if(right.justPressed()&&(index!=13 && index!= 26)){
-			index+=1;
-			select.x+=36;
-			console.log(index);
+		else if(right.justPressed()){
+			if(index == 13 || index == 26){
+				index-=12;
+				select.x-=(36*12);
+			}
+			else{
+				index+=1;
+				select.x+=36;
+			}	
 		}
 	},
 
 	enterLetter: function(){
-		//I'm in awe at the size of this \/ lad, the absolute unit
+		//I'm in awe at the size of this lad, the absolute unit
 			if(index==1){input.text = input.text + 'A'}
 			else if(index==2){input.text = input.text + 'B'}
 			else if(index==3){input.text = input.text + 'C'}
@@ -124,23 +151,21 @@ code.prototype = {
 
 
 	render:function(){
-		game.debug.geom(select,'green',false);
+		game.debug.geom(select,'#39ff14',false);
 	},
-	keyPress: function(char){
-		// bmd.cls();
-		// console.log(char);
-		// letter = char;
-		// text = text + letter;
-		// bmd.context.fillText(text,64,64);
-		// console.log(text);
+	checkWord: function(){
+		if(scoreWord===input.text){
+			score+=15;
+			scoreWord = words[Math.floor(Math.random() * words.length)];
+			typeThis.text = 'TYPE: ' + scoreWord;
+			input.text = '';
+			wordsNeeded--;
+			amountDisplay.text = 'WORDS LEFT: ' + wordsNeeded
+		}
 	},
 
 	backSpace: function(){
-		// console.log("hmmmmmmmmmmmmm");
-
 		input.text = input.text.substring(0,input.text.length-1);
-
-
 	}
 
 }
