@@ -62,7 +62,7 @@ alarmClock.prototype = {
 
 		lamp = this.add.sprite(0,0,'alarmAtlas','lamp');
 		
-		//text for now
+		//text and variables for the clock display
 		time = 12;
 		dayTrack = 0;
 		amPM = ['AM','PM'];

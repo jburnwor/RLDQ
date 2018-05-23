@@ -53,14 +53,11 @@ stamping.prototype = {
 		game.physics.arcade.enable(bin);
 		bin.anchor.setTo(0.5,0);
 
-		//this is the tutorial sprite that appears for the first actions on day 1
-		if(day==1){
-			arrow = this.add.sprite(game.world.centerX+102,game.world.centerY,'stampAtlas','instructionArrow001');
-			arrow.anchor.setTo(0.5,0.5);
-			arrow.animations.add('arrow',Phaser.Animation.generateFrameNames('instructionArrow',1, 4, '',3), 6 ,true);
-			arrow.animations.play('arrow');
-		}
-
+		//this is the tutorial sprite that appears for the first action
+		arrow = this.add.sprite(game.world.centerX+102,game.world.centerY,'stampAtlas','instructionArrow001');
+		arrow.anchor.setTo(0.5,0.5);
+		arrow.animations.add('arrow',Phaser.Animation.generateFrameNames('instructionArrow',1, 4, '',3), 6 ,true);
+		arrow.animations.play('arrow');
 
 		//initialize the sound effects in the game
 

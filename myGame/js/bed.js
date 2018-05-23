@@ -2,8 +2,12 @@
 var bed = function(){}
 bed.prototype = {
 	preload: function(){
+		this.load.path = 'assets/img/bedRoom/';
+		this.load.atlas('bedAtlas','bedRoomAtlas.png','bedRoomAtlas.json');
 		this.load.path = 'assets/img/';
-		this.load.image('player','playerTemp.png');
+		this.load.image('player','playerTemp.png',);
+		this.load.path = 'assets/fonts/';
+		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
 	},
 	create: function(){
 
@@ -11,12 +15,24 @@ bed.prototype = {
 
 		game.stage.backgroundColor = 'rgb(127,127,127)';
 
+		var x = 0;
+		var y = 0;
+		//create the floor
+		for(var i = 1;i <=128; i++){
+			this.add.image(x,y,'bedAtlas','bookshelf');
+			x+=64;
+			if(i%8==0){
+				y+=32;
+				x = 0;
+			}
+		}
+
 		//put our obstacles in a group 
 		things = game.add.group();
 		things.enableBody = true;
 
 		//spawn them
-		for(var i = 0; i<50;i++){
+		for(var i = 0; i<64;i++){
 			//give them a random position then realign them to a "grid"
 			xPos = game.rnd.integerInRange(0,game.world.width-32);
 			xPos = xPos - xPos%32
@@ -24,10 +40,10 @@ bed.prototype = {
 			yPos = yPos - yPos%32
 			//failsafe for when a block would spawn in or directly around the player
 			//without this the player can be killed instantly or trapped at the start
-			if((xPos==0&&yPos==game.world.height-32)||(xPos==0&&yPos==game.world.height-64)||(xPos==32&&yPos==game.world.height-32)||(xPos==32&&yPos==game.world.height-64)){
+			if((xPos==0&&yPos==game.world.height-32)||(xPos==0&&yPos==game.world.height-64)||(xPos==32&&yPos==game.world.height-32)){
 				yPos-=64;
 			}
-			item = things.create(xPos, yPos, 'player');
+			item = things.create(xPos, yPos, 'bedAtlas','bookStack');
 			//can't push the blocks
 			item.body.immovable = true;
 			item.tint = 000099;
@@ -40,20 +56,19 @@ bed.prototype = {
 		lights.alpha = 0;
 		lights.tint = 000000;
 
-		//create 10 second timer to turn off lights, which will then trigger the stage timer
+		//create 10 second timer to turn off lights, which will then trigger the stage timer and display the UI
 		lightSwitch = game.time.create(false);
 		lightSwitch.add(10000,this.lightsOff,game);
 		lightSwitch.start();
 		
 
 		//adding player and bed objects
-		player = game.add.sprite(0,game.world.height-32,'player');
+		player = game.add.sprite(0,game.world.height-32,'bedAtlas','charS');
 		game.physics.arcade.enable(player);
 		player.body.collideWorldBounds = true;
 
-		bed = game.add.sprite(game.world.width-32,0,'player');
+		bed = game.add.sprite(game.world.width-64,0,'bedAtlas','bed');
 		game.physics.arcade.enable(bed);
-		bed.scale.setTo(1,2);
 
 		damagedSound = game.add.audio('damaged');
 
@@ -63,14 +78,9 @@ bed.prototype = {
     	down = game.input.keyboard.addKey(Phaser.Keyboard.S);
     	left = game.input.keyboard.addKey(Phaser.Keyboard.A);
     	right = game.input.keyboard.addKey(Phaser.Keyboard.D);
-    	upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-    	downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-    	leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-    	rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
-    	//show our UI
-		//scoreDisplay = new Score();
-		healthBG = new HealthBG();
-		healthDisplay = new Health();
+
+    	
+		lightsTimerDisplay = game.add.bitmapText(game.world.centerX-150, 32,'font', 'Lights off in...' + Math.round((lightSwitch.duration)/1000),48);
 		
 		//boolean to make sure the player can't move if the lights are still on
 		off = false;
@@ -80,36 +90,49 @@ bed.prototype = {
 			this.move();
 		}
 		this.collide();
+		if (lightSwitch.duration > 0) {
+            lightsTimerDisplay.text = 'Lights off in... ' + Math.ceil((lightSwitch.duration)/1000);
+        }
+        else{
+        	lightsTimerDisplay.kill();
+        }
 	},
 	move: function(){
-		if(up.justPressed()||upKey.justPressed()){
+		if(up.justPressed()){
 			player.body.y-=32;
 			//console.log(player.body.x,player.body.y);
 		}
-		else if(down.justPressed()||downKey.justPressed()){
+		else if(down.justPressed()){
 			player.body.y+=32;
 			//console.log(player.body.x,player.body.y);
 		}
-		else if(left.justPressed()||leftKey.justPressed()){
+		else if(left.justPressed()){
 			player.body.x-=32;
 			//console.log(player.body.x,player.body.y);
 		}
-		else if(right.justPressed()||rightKey.justPressed()){
+		else if(right.justPressed()){
 			player.body.x+=32;
 			//console.log(player.body.x,player.body.y);
 		}
 	},
 	lightsOff: function(){
 		game.add.tween(lights).to({ alpha: 1 }, 1, "Linear", true);
+		//show our UI
+		scoreDisplay = new Score();
+		healthBG = new HealthBG();
+		healthDisplay = new Health();
+
+
 		off = true;
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000,function(){day++, game.state.start('brushing',true,false),console.log(day)},game);
+		stageTimer.add(30000,function(){console.log('fired'), game.state.start('brushing',true,false)},game);
 		stageTimer.start();
+
+		timeDisplay = new TimeDisplay(stageTimer);
 	},
 	collide: function(){
 		if(game.physics.arcade.overlap(player,bed)){
 			console.log('yay');
-			day++;
 			game.state.start('brushing');
 			score+=100;
 		}
@@ -117,6 +140,5 @@ bed.prototype = {
 			health-=2;
 			damagedSound.play('',0,1,false);
 		}
-	},
-
+	}
 }

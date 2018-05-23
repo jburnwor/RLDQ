@@ -59,6 +59,7 @@ brushing.prototype = {
 
 		//to display the score
 		scoreDisplay = new Score();
+		healthBG = new HealthBG();
 		healthDisplay = new Health();
 
 		//timer for the stage
