@@ -13,5 +13,5 @@ window.onload = function () {
 	game.state.add('bed',bed);	
 	game.state.add('menu', menu);
 	game.state.add('walking', walking);
-	game.state.start('menu');
+	game.state.start('walking');
 }
