@@ -27,7 +27,7 @@ stamping.prototype = {
 
 		//create 30 second timer for the stage
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000,function(){game.state.start('alarmClock')},game);
+		stageTimer.add(30000,function(){game.state.start('coffee')},game);
 		stageTimer.start();
 
 		//add paper stack

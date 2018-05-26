@@ -3,6 +3,7 @@ code.prototype = {
 	preload: function(){
 		this.load.path = 'assets/img/writeCode/'
 		this.load.atlas('codeTextAtlas','codeTextAtlas.png','codeTextAtlas.json');
+		this.load.image('bg','background.png');
 		this.load.path = 'assets/fonts/';
 		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
 	},
@@ -13,8 +14,10 @@ code.prototype = {
 				'FOCUS','WORTH','ACCOUNT','BENEFIT','COMPANY','DEFICIT','ECONOMY','MANAGER','PENSION'];
 
 
+		game.add.image(0,0,'bg');
+
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000,function(){console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')},game);
+		stageTimer.add(30000,function(){console.log('timer'), game.state.start('alarmClock')},game);
 		stageTimer.start();
 
 		wordsNeeded = 5;
@@ -27,7 +30,7 @@ code.prototype = {
 	 	enter.onDown.add(this.enterLetter,this);
 
 	 	//starting position of the "on screen keyboard"
-		var y = 400;
+		var y = 390;
 		var x = 0;
 		//the letter they are on
 		index = 1;
@@ -42,13 +45,13 @@ code.prototype = {
 				id = '' + i;
 			}
 			if(i==14){
-				y = 460;
+				y = 450;
 				x = 0;
 			}
 			if(i==24){
 				x+=6
 			}
-			this.add.sprite(x+16,y,'codeTextAtlas',id);
+			letter = this.add.sprite(x+16,y,'codeTextAtlas',id);
 			x+=36;
 		}
 		text = 'hi';
@@ -61,13 +64,21 @@ code.prototype = {
     	down = game.input.keyboard.addKey(Phaser.Keyboard.S);
     	left = game.input.keyboard.addKey(Phaser.Keyboard.A);
     	right = game.input.keyboard.addKey(Phaser.Keyboard.D);
+    	upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    	downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+    	leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+    	rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
     	scoreDisplay = new Score();
+    	healthBG = new HealthBG();
+    	healthDisplay = new Health();
 
     	scoreWord = words[Math.floor(Math.random() * words.length)];
-		typeThis = game.add.bitmapText(game.world.centerX-200,game.world.centerY-125,"font", 'TYPE: ' + scoreWord, 60);
-		amountDisplay = game.add.bitmapText(game.world.centerX-200,game.world.centerY-160,"font", 'WORDS LEFT: ' + wordsNeeded, 60);
-
+		typeThis = game.add.bitmapText(game.world.centerX,game.world.centerY-160,"font", 'TYPE: ' + scoreWord, 60);
+		typeThis.anchor.setTo(0.5,0);
+		typeThis.tint = 0x39ff14;
+		amountDisplay = game.add.bitmapText(game.world.centerX,game.world.centerY-125,"font", 'WORDS LEFT: ' + wordsNeeded, 60);
+		amountDisplay.anchor.setTo(0.5,0);
 
 
 	},
@@ -77,7 +88,7 @@ code.prototype = {
 	},
 	move: function(){
 		//move our select cursor and allow it to wrap around the keyboard
-		if(up.justPressed()){
+		if(up.justPressed() || upKey.justPressed()){
 			if(index<13){
 				index+=13;
 				select.y+=60;
@@ -87,7 +98,7 @@ code.prototype = {
 				select.y-=60;
 			}
 		}
-		else if(down.justPressed()){
+		else if(down.justPressed() || downKey.justPressed()){
 			if(index>13){
 				index-=13;
 				select.y-=60;
@@ -97,7 +108,7 @@ code.prototype = {
 				select.y+=60;
 			}
 		}
-		else if(left.justPressed()){
+		else if(left.justPressed() || leftKey.justPressed()){
 			if(index == 1 || index == 14){
 				index+=12;
 				select.x+= (36*12);
@@ -107,7 +118,7 @@ code.prototype = {
 				select.x-=36;
 			}
 		}
-		else if(right.justPressed()){
+		else if(right.justPressed() || rightKey.justPressed()){
 			if(index == 13 || index == 26){
 				index-=12;
 				select.x-=(36*12);
@@ -155,7 +166,7 @@ code.prototype = {
 	},
 	checkWord: function(){
 		if(scoreWord===input.text){
-			score+=15;
+			score+=(scoreWord.length*3);
 			scoreWord = words[Math.floor(Math.random() * words.length)];
 			typeThis.text = 'TYPE: ' + scoreWord;
 			input.text = '';

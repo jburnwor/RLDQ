@@ -78,7 +78,10 @@ bed.prototype = {
     	down = game.input.keyboard.addKey(Phaser.Keyboard.S);
     	left = game.input.keyboard.addKey(Phaser.Keyboard.A);
     	right = game.input.keyboard.addKey(Phaser.Keyboard.D);
-
+		upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+    	downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+    	leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+    	rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
     	
 		lightsTimerDisplay = game.add.bitmapText(game.world.centerX-150, 32,'font', 'Lights off in...' + Math.round((lightSwitch.duration)/1000),48);
 		
@@ -98,19 +101,19 @@ bed.prototype = {
         }
 	},
 	move: function(){
-		if(up.justPressed()){
+		if(up.justPressed()||upKey.justPressed()){
 			player.body.y-=32;
 			//console.log(player.body.x,player.body.y);
 		}
-		else if(down.justPressed()){
+		else if(down.justPressed()||downKey.justPressed()){
 			player.body.y+=32;
 			//console.log(player.body.x,player.body.y);
 		}
-		else if(left.justPressed()){
+		else if(left.justPressed()||leftKey.justPressed()){
 			player.body.x-=32;
 			//console.log(player.body.x,player.body.y);
 		}
-		else if(right.justPressed()){
+		else if(right.justPressed()||rightKey.justPressed()){
 			player.body.x+=32;
 			//console.log(player.body.x,player.body.y);
 		}
