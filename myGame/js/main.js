@@ -14,5 +14,5 @@ window.onload = function () {
 	game.state.add('code',code);	
 	game.state.add('menu', menu);
 	game.state.add('coffee', coffee);
-	game.state.start('menu');
+	game.state.start('coffee');
 }

@@ -7,7 +7,8 @@ coffee.prototype = {
 		this.load.image('bg','background.png');
 		this.load.image('light','light.png');
 		this.load.image('mug','coffeeMug.png');
-		this.load.image('plane', '../playerTemp.png');
+		this.load.image('plane', 'coffee.png');
+		this.load.image('mouse','MOUSE0.png');
 
 		this.load.path = 'assets/fonts/';
         this.load.bitmapFont('font','m5x7.png','m5x7.xml');
@@ -44,7 +45,7 @@ coffee.prototype = {
 		coffeeEmitter.setRotation(0,0);
 		//the amount of particles only needs to be 100 due to killing them later. allowing the emmiter can keep
 		coffeeEmitter.makeParticles('plane',0,50,true,false);
-		coffeeEmitter.forEach(function(particle){particle.tint = 0x8B4513}, this);
+		//coffeeEmitter.forEach(function(particle){particle.tint = 0x653221}, this);
 		coffeeEmitter.start(false, 3000, 25);	// (explode, lifespan, freq, quantity)
 
 		killPlane = this.add.sprite(0,game.world.height+32,'plane');
@@ -60,26 +61,32 @@ coffee.prototype = {
 		mug.body.setSize(mug.width+30, 15, 0, 0);
 		mug.body.immovable = true;
 		mug.anchor.setTo(0.5,0);
+
 		count = 0;
 		hpCount = 0;
 
+		mouse = this.add.image(mug.x-16,mug.y+4,'mouse');
+		mouse.anchor.setTo(0.5,0);
+		mouse.scale.setTo(0.65,0.65);
+
+
 		console.log(game.world.height);
 
+		//UI for the state
 		scoreDisplay = new Score();
 		healthBG = new HealthBG();
 		healthDisplay = new Health();
+		timeDisplay = new TimeDisplay(stageTimer);
 
 	},
 	update: function () {
 		//move brush to pointer
 		mug.x = this.game.input.mousePointer.x;
 		coffeeEmitter.x = coffeeJug.x;
+		mouse.x = mug.x-16;
 
 		//calls the function on each particle/child
 		coffeeEmitter.forEach(this.checkCollision, this);
-	},
-	render: function(){
-		game.debug.body(mug);
 	},
 	jugSpeed: function() {
 		if(coffeeJug.x == coffeeJug.width/2){

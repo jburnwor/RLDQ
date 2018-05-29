@@ -4,8 +4,10 @@ bed.prototype = {
 	preload: function(){
 		this.load.path = 'assets/img/bedRoom/';
 		this.load.atlas('bedAtlas','bedRoomAtlas.png','bedRoomAtlas.json');
+		this.load.image('character','charSSilhouette.png');
 		this.load.path = 'assets/img/';
 		this.load.image('player','playerTemp.png',);
+		this.load.atlas('tutorialAtlas','tutorialAtlas.png','tutorialAtlas.json')
 		this.load.path = 'assets/fonts/';
 		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
 	},
@@ -27,12 +29,14 @@ bed.prototype = {
 			}
 		}
 
+
+		itemNumbers = [2,3,5,6,7,8,9,10]
 		//put our obstacles in a group 
 		things = game.add.group();
 		things.enableBody = true;
 
 		//spawn them
-		for(var i = 0; i<64;i++){
+		for(var i = 0; i<50;i++){
 			//give them a random position then realign them to a "grid"
 			xPos = game.rnd.integerInRange(0,game.world.width-32);
 			xPos = xPos - xPos%32
@@ -43,10 +47,13 @@ bed.prototype = {
 			if((xPos==0&&yPos==game.world.height-32)||(xPos==0&&yPos==game.world.height-64)||(xPos==32&&yPos==game.world.height-32)){
 				yPos-=64;
 			}
-			item = things.create(xPos, yPos, 'bedAtlas','bookStack');
+			item = things.create(xPos, yPos, 'bedAtlas',itemNumbers[Math.floor(Math.random() * itemNumbers.length)]);
 			//can't push the blocks
 			item.body.immovable = true;
-			item.tint = 000099;
+			//item.tint = 000099;
+			if(game.physics.arcade.collide(things)){
+				item.kill();
+			}
 		}
 
 		//we tween this to be 100% opaque to simulate the lights turning off
@@ -60,10 +67,16 @@ bed.prototype = {
 		lightSwitch = game.time.create(false);
 		lightSwitch.add(10000,this.lightsOff,game);
 		lightSwitch.start();
+
+		arrow = this.add.sprite(16,game.world.height-48,'bedAtlas','arrow00');
+		arrow.anchor.setTo(0.5,0.5);
+		arrow.rotation = Math.PI;
+		arrow.animations.add('arrow',Phaser.Animation.generateFrameNames('arrow',0, 3, '',2), 8 ,true);
+		arrow.animations.play('arrow');
 		
 
 		//adding player and bed objects
-		player = game.add.sprite(0,game.world.height-32,'bedAtlas','charS');
+		player = game.add.sprite(0,game.world.height-32,'character');
 		game.physics.arcade.enable(player);
 		player.body.collideWorldBounds = true;
 
@@ -82,15 +95,32 @@ bed.prototype = {
     	downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
     	leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
     	rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+    	reset = game.input.keyboard.addKey(Phaser.Keyboard.R);
+
+
+    	wasd = this.add.sprite(game.world.centerX,game.world.centerY,'tutorialAtlas','WASD00');
+		wasd.anchor.setTo(0.5,0.5);
+		wasd.animations.add('wasd',Phaser.Animation.generateFrameNames('WASD',0, 1, '',1), 1 ,true);
+		wasd.animations.play('wasd');
+		wasd.alpha = 0;
     	
 		lightsTimerDisplay = game.add.bitmapText(game.world.centerX-150, 32,'font', 'Lights off in...' + Math.round((lightSwitch.duration)/1000),48);
+		memorizeThis = game.add.bitmapText(game.world.centerX, 80,'font', 'Memorize the room layout',48);
+		memorizeThis.anchor.setTo(0.5,0);
+		resetText = game.add.bitmapText(game.world.centerX, game.world.height-48,'font', 'Trapped? Press \'R\' to reset',48);
+		resetText.anchor.setTo(0.5,0);
+
 		
 		//boolean to make sure the player can't move if the lights are still on
 		off = false;
+
+
 	},
 	update: function(){
+		this.reset();
 		if(off){
 			this.move();
+			this.tutorial();
 		}
 		this.collide();
 		if (lightSwitch.duration > 0) {
@@ -98,6 +128,8 @@ bed.prototype = {
         }
         else{
         	lightsTimerDisplay.kill();
+        	memorizeThis.kill();
+        	resetText.kill();
         }
 	},
 	move: function(){
@@ -125,7 +157,6 @@ bed.prototype = {
 		healthBG = new HealthBG();
 		healthDisplay = new Health();
 
-
 		off = true;
 		stageTimer = game.time.create(false);
 		stageTimer.add(30000,function(){console.log('fired'), game.state.start('brushing',true,false)},game);
@@ -142,6 +173,23 @@ bed.prototype = {
 		if(game.physics.arcade.collide(player, things)){
 			health-=2;
 			damagedSound.play('',0,1,false);
+		}
+	},
+	tutorial: function(){
+		wasd.alpha = 1;
+		if(up.justPressed()||upKey.justPressed()||down.justPressed()||downKey.justPressed()||left.justPressed()||leftKey.justPressed()||right.justPressed()||rightKey.justPressed()){
+			arrow.x = game.world.width-96
+			arrow.y = 32
+			arrow.rotation = Math.PI/2;
+			arrowTimer = game.time.create(false);
+			arrowTimer.add(5000,function(){arrow.kill()},game);
+			arrowTimer.start();
+			wasd.kill();
+		}
+	},
+	reset: function(){
+		if(reset.justPressed()){
+			game.state.start('bed');
 		}
 	}
 }

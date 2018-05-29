@@ -1,0 +1,15 @@
+bed,99,0,64,96
+bookshelf,33,132,64,32
+bookStack,66,0,32,32
+chair1,98,132,32,32
+charS,0,0,32,32
+clothes,0,33,32,32
+garbageCan,66,33,32,32
+glassTable,98,99,64,32
+pottedPlant,66,66,32,32
+sofa,0,66,64,32
+TV,33,99,64,32
+arrow01,0,132,32,32
+arrow00,0,99,32,32
+arrow02,33,0,32,32
+arrow03,33,33,32,32

@@ -4,6 +4,7 @@ code.prototype = {
 		this.load.path = 'assets/img/writeCode/'
 		this.load.atlas('codeTextAtlas','codeTextAtlas.png','codeTextAtlas.json');
 		this.load.image('bg','background.png');
+		this.load.image('wasd1','WASD0.png');
 		this.load.path = 'assets/fonts/';
 		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
 	},
@@ -15,6 +16,9 @@ code.prototype = {
 
 
 		game.add.image(0,0,'bg');
+
+		// wasd=game.add.image(16,236,'wasd1');
+		// wasd.scale.setTo(0.75,0.75);
 
 		stageTimer = game.time.create(false);
 		stageTimer.add(30000,function(){console.log('timer'), game.state.start('alarmClock')},game);
