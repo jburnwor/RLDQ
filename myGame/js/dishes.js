@@ -1,5 +1,6 @@
-var brush;
-var mouth;
+var sponge;
+var knife;
+var knifeGrime;
 var lastPos;
 var tintNum = 0;
 var tint = String(0xFFFF00);
@@ -9,6 +10,7 @@ var dishes = function () {
 }
 dishes.prototype = {
 	preload: function () {
+		this.load.image('spongeTemp', 'assets/img/playerTemp.png')
 		this.load.path = 'assets/img/washingDishes/';
 		this.load.image('bg', 'background.png');
         this.load.image('light', 'Light.png');
@@ -22,6 +24,10 @@ dishes.prototype = {
 		this.load.path = 'assets/audio/';
 		this.load.audio('damaged', ['damaged.ogg']);
 
+		this.load.path = 'assets/fonts/';
+		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
+        this.stage.disableVisibilityChange = true;
+
 	},
 
 	create: function () {
@@ -33,18 +39,36 @@ dishes.prototype = {
         var bg = this.add.sprite(0, 0, 'bg');
         var bg = this.add.sprite(0, 0, 'light');
 
+		//add in some background knifes
+		this.add.sprite(5, 330, 'knife1');
+		this.add.sprite(5, 330, 'grime1');
+		this.add.sprite(8, 340, 'knife1');
+		this.add.sprite(8, 340, 'grime1');
 
-		
+		var temp = this.add.sprite(500, 350, 'knife1');
+		temp.angle += 180;
+		temp = this.add.sprite(510, 340, 'knife1');
+		temp.angle += 180;
+		temp = this.add.sprite(520, 330, 'knife1');
+		temp.angle += 180;
 
-        knife = this.add.sprite(0, 0, 'knife1');
-        knifeGrime = this.add.sprite(0, 0, 'grime1');
-
+		//add in the knife that is going to be cleaned
+		knife = this.add.sprite(10, 250, 'knife1');
+		knife.scale.setTo(1.5,1.5);
+		knifeGrime = this.add.sprite(10, 250, 'grime1');
+		knifeGrime.alpha = 1;
+		knifeGrime.scale.setTo(1.5,1.5);
 		game.physics.enable(knife);
 
-		/* //to display the score
+		sponge = this.add.sprite(200, 200, 'spongeTemp');
+		game.physics.enable(sponge);
+		sponge.anchor.set(0.5, 0.5);
+		sponge.tint = String(0xFFFF00);
+
+		//to display the score
 		scoreDisplay = new Score();
 		healthBG = new HealthBG();
-		healthDisplay = new Health(); */
+		healthDisplay = new Health();
 
 		/* //timer for the stage
 		stageTimer = game.time.create(false);
@@ -52,6 +76,24 @@ dishes.prototype = {
 		stageTimer.start(); */
 	},
 	update: function () {
+
+		knifeGrime.x = knife.x;
+		knifeGrime.y = knife.y;
+
+		knife.x += 1;
+		if(knife.x > (game.width + knife.width/2)){
+			knife.x = 0 - knife.width;
+			console.log(knifeGrime.alpha);
+			knifeGrime.alpha = 1;
+		}
+		//move brush to pointer
+		sponge.x = this.game.input.mousePointer.x;
+		sponge.y = this.game.input.mousePointer.y;
+
+		if(backForth(game) && game.physics.arcade.overlap(knife, sponge)){
+			knifeGrime.alpha -= 0.01;
+			console.log('yes');
+		}
 		//if the mouse is moving back and forth, give points
 		/* if (backForth(game) && !(allTeeth.intersects(brush.getBounds()))) {
 			health -= 0.5;
@@ -75,8 +117,8 @@ dishes.prototype = {
 		if (Phaser.Rectangle.contains(brush.body, game.input.x, game.input.y)) {
 			brush.body.velocity.setTo(0, 0);
 		}
-
-		lastPos = game.input.speed.x; */
+*/
+		lastPos = game.input.speed.x; 
 	},
 
 	render: function () {
@@ -90,43 +132,28 @@ dishes.prototype = {
 	}
 }
 
-/* // Teeth prefab constructor function
-function Teeth(game, frame, startx, starty, flip) {
+// Teeth prefab constructor function
+function Dishes(game, frame, frame2, startx, starty) {
 	// call to Phaser.Sprite // new Sprite(game, x, y, key, frame)
 	Phaser.Sprite.call(this, game, startx, starty, frame);
 
 	// add custom properties
 	this.anchor.set(0.5);
 
-	this.tint = String(0xFFFF00);
-
-	if (flip) {
-		this.scale.y *= -1;
-	}
-
 
 	//enable physics
 	game.physics.arcade.enable(this);
 	this.body.immovable = true;
 }
+
 // define prefab's prototype and constructor
-Teeth.prototype = Object.create(Phaser.Sprite.prototype);
-Teeth.prototype.constructor = Teeth;
+Dishes.prototype = Object.create(Phaser.Sprite.prototype);
+Dishes.prototype.constructor = Dishes;
 
 // override Phaser.Sprite update to check bounds and direction
-Teeth.prototype.update = function () {
-	if (game.physics.arcade.overlap(this, brush)) {
-		if (tintNum % 3 == 0) {
-			if (this.tint < 16777200) {
-				this.tint++; this.tint++; this.tint++; this.tint++;
-				//this.tint ++;this.tint ++;this.tint ++;this.tint ++;
-				tint = this.tint;
-			}
-		}
-		//this.tint = 0xffffff;
-		if (backForth(game)) {
-			tintNum++;
-		}
+Dishes.prototype.update = function () {
+	if (game.physics.arcade.overlap(this, sponge)) {
+
 	}
 }
 
@@ -150,4 +177,3 @@ function backForth(game) {
 		}
 	}
 }
- */
