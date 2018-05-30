@@ -39,9 +39,9 @@ coffee.prototype = {
 		jugVelocity.start();
 
 		coffeeEmitter = game.add.emitter(coffeeJug.x, 0, 0);
-		coffeeEmitter.gravity = 800;
+		coffeeEmitter.gravity = 0;
 		coffeeEmitter.setXSpeed(0,0);
-		coffeeEmitter.setYSpeed(500,500);
+		coffeeEmitter.setYSpeed(750,750);
 		coffeeEmitter.setRotation(0,0);
 		//the amount of particles only needs to be 100 due to killing them later. allowing the emmiter can keep
 		coffeeEmitter.makeParticles('plane',0,50,true,false);
