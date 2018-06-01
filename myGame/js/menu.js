@@ -14,6 +14,9 @@ menu.prototype = {
         this.load.image('start', 'start.png');
         this.load.image('exit', 'exit.png');
         this.load.image('selector', 'selector.png');
+
+        this.load.path = 'assets/fonts/';
+		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
         this.stage.disableVisibilityChange = true;
 
     },

@@ -13,6 +13,9 @@ stamping.prototype = {
 		this.load.audio('placePaper',['placePaper.ogg']);
 		this.load.audio('damaged',['damaged.ogg']);
 
+		this.load.path = 'assets/fonts/';
+		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
+
 	},
 	create: function(){
 		console.log('stamping: create');
@@ -24,7 +27,7 @@ stamping.prototype = {
 
 		//create 30 second timer for the stage
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000,function(){game.state.start('alarmClock')},game);
+		stageTimer.add(30000,function(){game.state.start('coffee')},game);
 		stageTimer.start();
 
 		//add paper stack
@@ -50,14 +53,11 @@ stamping.prototype = {
 		game.physics.arcade.enable(bin);
 		bin.anchor.setTo(0.5,0);
 
-		//this is the tutorial sprite that appears for the first actions on day 1
-		if(day==1){
-			arrow = this.add.sprite(game.world.centerX+102,game.world.centerY,'stampAtlas','instructionArrow001');
-			arrow.anchor.setTo(0.5,0.5);
-			arrow.animations.add('arrow',Phaser.Animation.generateFrameNames('instructionArrow',1, 4, '',3), 6 ,true);
-			arrow.animations.play('arrow');
-		}
-
+		//this is the tutorial sprite that appears for the first action
+		arrow = this.add.sprite(game.world.centerX+102,game.world.centerY,'stampAtlas','instructionArrow001');
+		arrow.anchor.setTo(0.5,0.5);
+		arrow.animations.add('arrow',Phaser.Animation.generateFrameNames('instructionArrow',1, 4, '',3), 6 ,true);
+		arrow.animations.play('arrow');
 
 		//initialize the sound effects in the game
 
@@ -81,6 +81,7 @@ stamping.prototype = {
 
 		//to display the score and Health
 		scoreDisplay = new Score();
+		healthBG = new HealthBG();
 		healthDisplay = new Health();
 	},
 	update: function(){
@@ -96,11 +97,8 @@ stamping.prototype = {
 			this.returned = false;
 		}
 
-		//display the tutorial if it's day 1
-		if(day==1){
-			this.tutorial();
-		}
-
+		this.tutorial();
+		stamp.bringToTop();
 		//stamp the paper when the stamp intersects the stack of papers
 		if(game.physics.arcade.collide(stamp,paper)&&this.topSheet){
 			this.topSheet=false;
