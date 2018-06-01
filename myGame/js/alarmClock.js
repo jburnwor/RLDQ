@@ -101,6 +101,9 @@ alarmClock.prototype = {
 
 		//to display the score
 		scoreDisplay = new Score();
+		healthBG = new HealthBG();
+    	healthDisplay = new Health();
+    	timeDisplay = new TimeDisplay(stageTimer);
 		
 
 	},

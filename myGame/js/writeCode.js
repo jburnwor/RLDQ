@@ -5,6 +5,7 @@ code.prototype = {
 		this.load.atlas('codeTextAtlas','codeTextAtlas.png','codeTextAtlas.json');
 		this.load.image('bg','background.png');
 		this.load.atlas('tutorialAtlas','../tutorialAtlas.png','../tutorialAtlas.json');
+		this.load.atlas('codeAnimation','codeAnimation.png','codeAnimation.json')
 		this.load.path = 'assets/fonts/';
 		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
 		this.load.audio('keySound','../audio/codeMove.ogg');
@@ -17,6 +18,11 @@ code.prototype = {
 
 
 		game.add.image(0,0,'bg');
+
+
+		codeAnimation = this.add.sprite(0,0,'codeAnimation','codeAnim000');
+		codeAnimation.animations.add('codeAnimation',Phaser.Animation.generateFrameNames('codeAnim',0, 39, '',3), 2 ,true);
+		codeAnimation.animations.play('codeAnimation');
 
 		keySound = game.add.audio('keySound');
 
