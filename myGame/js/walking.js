@@ -7,16 +7,31 @@ var walking = function () {
     this.doubleRight = false;
     this.doubleLeft = false;
     this.player;
+    this.playerLeft;
+    this.playerRight;
+    this.bg;
+    this.impact;
     this.walkCounter = 0;
 }
 walking.prototype = {
     preload: function () {
-        this.load.path = 'assets/img/';
-        this.load.image('player', 'playerTemp.png');
+        this.load.image('temp', 'assets/img/playerTemp.png')
+        this.load.path = 'assets/img/walking/';
+        this.load.image('player', 'sprite.png')
+        this.load.image('player1', 'sprite/charWalk00.png');
+        this.load.image('player2', 'sprite/charWalk01.png');
+
+        this.load.image('bg', 'sceneModel.png');
+        this.load.image('light', 'light.png');
+
 
 
         this.load.path = 'assets/audio/';
         this.load.audio('damaged', ['damaged.ogg']);
+
+        this.load.path = 'assets/fonts/';
+		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
+        this.stage.disableVisibilityChange = true;
 
     },
 
@@ -24,21 +39,27 @@ walking.prototype = {
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-		/* //create the background
+        /* //create the background
         var bg = this.add.sprite(0, 0, 'bg'); */
+        this.bg = game.add.tileSprite(0, 0, 512, 512, 'bg');
+        this.bg.tileScale.x = 4;
+        this.bg.tileScale.y = 4;
 
         this.player = this.add.sprite(50, 450, 'player');
-        game.physics.enable(this.player, Phaser.Physics.ARCADE);
-        this.player.destroyed = false;
+        this.playerLeft = this.add.sprite(50, 450, 'player1');
+        this.playerLeft.alpha = 0;
+        this.playerRight = this.add.sprite(50, 450, 'player2');
+        this.playerRight.alpha = 0;
+        
+        this.player.scale.setTo(2,2);
+        this.playerLeft.scale.setTo(2,2);
+        this.playerRight.scale.setTo(2,2);
 
-        // setup barrier group
-		this.obstacleGroup = game.add.group();
-        this.addObstacle(this.obstacleGroup);
+        this.impact = this.add.sprite(50, 480, 'temp');
+        this.impact.scale.setTo(0.25, 0.25);
+        this.impact.tint = 0xff0000;
+        this.impact.alpha = 0;
 
-        // check for collision
-		if(!this.player.destroyed) {
-			game.physics.arcade.collide(this.player, this.obstacleGroup, this.playerCollision, null, this);
-		}
         
         //to display the score
         scoreDisplay = new Score();
@@ -53,19 +74,17 @@ walking.prototype = {
     update: function () {
         //note to self: make it so going left and right makes you go faster and more score 
 
-
-
-
-
-
-        //check when left and right keys are pressed to change animation and add score
-        //and check for double presses to take away health
-        if(game.input.keyboard.isDown(Phaser.Keyboard.LEFT) && game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
+        if(game.input.keyboard.justPressed(Phaser.Keyboard.Left) && game.input.keyboard.justPressed(Phaser.Keyboard.Right)){
+            
             this.player.tint = 0xfffff0;
             //if both left and right are pressed then the player losses health
             if(!this.bothJustPressed){
                 console.log('bad both');
                 health -= 3;
+                this.player.alpha = 1;
+                this.playerLeft.alpha = 0;
+                this.playerRight.alpha = 0;
+                this.bg.tilePosition.x -= 2;
             }
 
             //reset booleans 
@@ -78,18 +97,23 @@ walking.prototype = {
             //set boolean to show both directions were pressed
             this.bothJustPressed = true;
                 
-        }else if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+        }else if (game.input.keyboard.justPressed(Phaser.Keyboard.LEFT)) {
             this.player.tint = 0xff0000;
             if(!this.leftJustPressed){
-                this.player.y = 415;
-                this.player.x = 15;
+                /* this.player.y = 415;
+                this.player.x = 15; */
+                this.player.alpha = 0;
+                this.playerLeft.alpha = 1;
+                this.playerRight.alpha = 0;
                 //add score for the first press of the left button 
                 score += 0.1;
+                this.bg.tilePosition.x -= 1;
                 //reset counter
                 this.walkCounter = 0; 
             }else if(this.doubleLeft){
                 //do nothing to prevent holding down the button
             }else if(this.leftJustPressed){
+                this.bg.tilePosition.x -= 2;
                 //increase counter
                 this.walkCounter +=1;
                 //one quick tap of a button would increase the counter to about 5
@@ -116,17 +140,23 @@ walking.prototype = {
 
             this.leftJustPressed = true;
 
-        } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+        } else if (game.input.keyboard.justPressed(Phaser.Keyboard.RIGHT)) {
             //same as left but for right button
             this.player.tint = 0x001eff;
-            this.player.y = 450;
-            this.player.x = 50;
+           /*  this.player.y = 450;
+            this.player.x = 50; */
+            
             if(!this.rightJustPressed){
                 score += 0.1;
+                this.player.alpha = 0;
+                this.playerLeft.alpha = 0;
+                this.playerRight.alpha = 1;
                 this.walkCounter = 0;
+                this.bg.tilePosition.x -= 2;
             }else if(this.doubleRight){
                 // do nothing
             }else if(this.rightJustPressed){
+                this.bg.tilePosition.x -= 1;
                 this.doubleRight = true;
                 if(this.walkCounter > 20){
                     this.doubleRight = true;
@@ -145,24 +175,17 @@ walking.prototype = {
 
             this.rightJustPressed = true;
         }
-            
+
+
+
+
+
+        
         // check for collision
 		if(!this.player.destroyed) {
 			game.physics.arcade.collide(this.player, this.obstacleGroup, this.playerCollision, null, this);
 		}
 
-    },
-
-    addObstacle: function(group) {
-		// construct new Barrier object, add it to the game world, and add it to the group
-		var tintColor = colors[game.rnd.between(0, colors.length-1)]; // grab a random color
-        var obstacle = new Obstacle(game, tintColor);
-		game.add.existing(obstacle);
-		group.add(obstacle);
-    },
-    
-    playerCollision: function(player, group){
-        health -= 0.1;
     },
 
     render: function () {
@@ -174,47 +197,4 @@ walking.prototype = {
         //game.debug.geom(allTeeth, '#ff0000', false);
 
     }
-}
-
-// Obstacle prefab constructor function
-function Obstacle(game, tintColor) {
-    this.justPressed = false;
-    this.newObstacle = true;
-    this.tint = tintColor;
-    // call to Phaser.Sprite // new Sprite(game, x, y, key, frame)
-    var position = game.rnd.integerInRange(0,1);
-    if(position > 0){
-        Phaser.Sprite.call(this, game, game.rnd.integerInRange(game.width,game.width-64), 415, 'player');
-    }else{
-        Phaser.Sprite.call(this, game, game.rnd.integerInRange(game.width,game.width-64), 450, 'player');
-    }
-    
-    //enable physics
-    game.physics.enable(this, Phaser.Physics.ARCADE);
-}
-// define prefab's prototype and constructor
-Obstacle.prototype = Object.create(Phaser.Sprite.prototype);
-Obstacle.prototype.constructor = Obstacle;
-
-// override Phaser.Sprite update to check bounds and direction
-Obstacle.prototype.update = function() {
-
-    if(this.newObstacle && this.x < game.width/2) {
-		this.newObstacle = false;
-		walking.prototype.addObstacle(this.parent, this.tint);
-	}
-
-    if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT) || game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)){
-        if(!this.justPressed){
-            this.x -= 10;
-            this.justPressed = true;
-        }
-    }else{
-        this.justPressed = false;
-    }
-
-    if(this.x < -this.width) {
-		this.kill();	
-	}
-    
 }
