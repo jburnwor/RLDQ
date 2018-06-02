@@ -18,7 +18,8 @@ menu.prototype = {
         this.load.path = 'assets/fonts/';
 		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
         this.stage.disableVisibilityChange = true;
-
+        this.load.audio('mainTheme','../audio/mainTheme.mp3');
+        this.load.audio('damaged',['../audio/damaged.ogg']);
     },
 
     create: function () {
@@ -43,6 +44,8 @@ menu.prototype = {
         this.exit.onInputOut.add(out, this);
         this.exit.onInputUp.add(up, this);
 
+        mainTheme = game.add.audio('mainTheme');
+
         function up(button) {
             console.log('button )up', arguments);
         }
@@ -57,7 +60,8 @@ menu.prototype = {
             console.log('button out');
         }
 
-        function actionOnClick() {
+        function actionOnClick(){
+        	mainTheme.play('',0.1,0.2,true);
             game.state.start('brushing');
 
             console.log('click');
