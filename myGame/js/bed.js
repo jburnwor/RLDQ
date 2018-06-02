@@ -68,6 +68,7 @@ bed.prototype = {
 		lightSwitch.add(10000,this.lightsOff,game);
 		lightSwitch.start();
 
+		//add a pointer arrow to show the player location
 		arrow = this.add.sprite(16,game.world.height-48,'bedAtlas','arrow00');
 		arrow.anchor.setTo(0.5,0.5);
 		arrow.rotation = Math.PI;
@@ -97,16 +98,19 @@ bed.prototype = {
     	rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
     	reset = game.input.keyboard.addKey(Phaser.Keyboard.R);
 
-
-    	wasd = this.add.sprite(game.world.centerX,game.world.centerY,'tutorialAtlas','WASD00');
+    	//show the controls for the state
+    	wasd = this.add.sprite(game.world.centerX,game.world.centerY,'tutorialAtlas','WASD0');
 		wasd.anchor.setTo(0.5,0.5);
 		wasd.animations.add('wasd',Phaser.Animation.generateFrameNames('WASD',0, 1, '',1), 1 ,true);
 		wasd.animations.play('wasd');
 		wasd.alpha = 0;
     	
+    	//add some text to to explain some things
 		lightsTimerDisplay = game.add.bitmapText(game.world.centerX-150, 32,'font', 'Lights off in...' + Math.round((lightSwitch.duration)/1000),48);
-		memorizeThis = game.add.bitmapText(game.world.centerX, 80,'font', 'Memorize the room layout',48);
-		memorizeThis.anchor.setTo(0.5,0);
+		if(day==1){
+			memorizeThis = game.add.bitmapText(game.world.centerX, 80,'font', 'Memorize the room layout',48);
+			memorizeThis.anchor.setTo(0.5,0);
+		}
 		resetText = game.add.bitmapText(game.world.centerX, game.world.height-48,'font', 'Trapped? Press \'R\' to reset',48);
 		resetText.anchor.setTo(0.5,0);
 
@@ -117,53 +121,58 @@ bed.prototype = {
 
 	},
 	update: function(){
+		//if they need to reset the state
 		this.reset();
+		//once the lights turn off allow them to move and show the controls
 		if(off){
 			this.move();
 			this.tutorial();
 		}
 		this.collide();
+		//countdown to the lights off
 		if (lightSwitch.duration > 0) {
             lightsTimerDisplay.text = 'Lights off in... ' + Math.ceil((lightSwitch.duration)/1000);
         }
+        //kill the text once the lights are off
         else{
         	lightsTimerDisplay.kill();
-        	memorizeThis.kill();
+        	if(day==1)
+        		memorizeThis.kill();
         	resetText.kill();
         }
 	},
+	//handle the movement of the game
 	move: function(){
 		if(up.justPressed()||upKey.justPressed()){
 			player.body.y-=32;
-			//console.log(player.body.x,player.body.y);
 		}
 		else if(down.justPressed()||downKey.justPressed()){
 			player.body.y+=32;
-			//console.log(player.body.x,player.body.y);
 		}
 		else if(left.justPressed()||leftKey.justPressed()){
 			player.body.x-=32;
-			//console.log(player.body.x,player.body.y);
 		}
 		else if(right.justPressed()||rightKey.justPressed()){
 			player.body.x+=32;
-			//console.log(player.body.x,player.body.y);
 		}
 	},
+	//hide the background
 	lightsOff: function(){
 		game.add.tween(lights).to({ alpha: 1 }, 1, "Linear", true);
-		//show our UI
-		scoreDisplay = new Score();
-		healthBG = new HealthBG();
-		healthDisplay = new Health();
 
+		//flag the timer
 		off = true;
 		stageTimer = game.time.create(false);
 		stageTimer.add(30000,function(){console.log('fired'), game.state.start('brushing',true,false)},game);
 		stageTimer.start();
 
+		//show our UI
+		scoreDisplay = new Score();
+		healthBG = new HealthBG();
+		healthDisplay = new Health();
 		timeDisplay = new TimeDisplay(stageTimer);
 	},
+	//handle the collision
 	collide: function(){
 		if(game.physics.arcade.overlap(player,bed)){
 			console.log('yay');
@@ -175,6 +184,7 @@ bed.prototype = {
 			damagedSound.play('',0,1,false);
 		}
 	},
+	//show the controls on the screen
 	tutorial: function(){
 		wasd.alpha = 1;
 		if(up.justPressed()||upKey.justPressed()||down.justPressed()||downKey.justPressed()||left.justPressed()||leftKey.justPressed()||right.justPressed()||rightKey.justPressed()){
@@ -187,6 +197,7 @@ bed.prototype = {
 			wasd.kill();
 		}
 	},
+	//reset the state if the layout is traps the player
 	reset: function(){
 		if(reset.justPressed()){
 			game.state.start('bed');
