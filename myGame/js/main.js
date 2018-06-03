@@ -13,6 +13,7 @@ window.onload = function () {
 	game.state.add('bed',bed);
 	game.state.add('code',code);	
 	game.state.add('menu', menu);
+	game.state.add('walking', walking);
 	game.state.add('coffee', coffee);
 	game.state.add('dishes', dishes);
 	game.state.start('menu');
