@@ -4,7 +4,6 @@ code.prototype = {
 		this.load.path = 'assets/img/writeCode/'
 		this.load.atlas('codeTextAtlas','codeTextAtlas.png','codeTextAtlas.json');
 		this.load.image('bg','background.png');
-		this.load.atlas('tutorialAtlas','../tutorialAtlas.png','../tutorialAtlas.json');
 		this.load.atlas('codeAnimation','codeAnimation.png','codeAnimation.json')
 		this.load.path = 'assets/fonts/';
 		this.load.bitmapFont('font','m5x7.png','m5x7.xml');

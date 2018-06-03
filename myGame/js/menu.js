@@ -14,7 +14,7 @@ menu.prototype = {
         this.load.image('start', 'start.png');
         this.load.image('exit', 'exit.png');
         this.load.image('selector', 'selector.png');
-
+        this.load.atlas('tutorialAtlas','../tutorialAtlas.png','../tutorialAtlas.json');
         this.load.path = 'assets/fonts/';
 		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
         this.stage.disableVisibilityChange = true;
@@ -61,7 +61,7 @@ menu.prototype = {
         }
 
         function actionOnClick(){
-        	mainTheme.play('',0.1,0.2,true);
+        	mainTheme.play('',0.1,0.15,true);
             game.state.start('brushing');
 
             console.log('click');

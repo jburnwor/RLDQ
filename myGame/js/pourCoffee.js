@@ -8,8 +8,7 @@ coffee.prototype = {
 		this.load.image('light','light.png');
 		this.load.image('mug','coffeeMug.png');
 		this.load.image('plane', 'coffee.png');
-		this.load.image('mouse','MOUSE0.png');
-
+		this.load.image('coffeeJug','coffeePot.png');
 		this.load.path = 'assets/fonts/';
         this.load.bitmapFont('font','m5x7.png','m5x7.xml');
 	},
@@ -28,13 +27,12 @@ coffee.prototype = {
 		light = game.add.image(0,0,'light');
 
 		//the pot/jug of coffee
-		coffeeJug = this.add.sprite(game.world.centerX,0,'plane');
+		coffeeJug = this.add.sprite(game.world.centerX,0,'coffeeJug');
 		game.physics.arcade.enable(coffeeJug);
-		coffeeJug.scale.setTo(3,3);
-		coffeeJug.tint = 4169e1;
 		coffeeJug.drag = 15;
 		coffeeJug.body.collideWorldBounds = true;
 		coffeeJug.anchor.setTo(0.5,0);
+		coffeeJug.body.setSize(coffeeJug.width-50, coffeeJug.height, 50,0);
 
 		//make the pot/jub move back and forth at random speeds
 		jugVelocity = game.time.create(false);
@@ -42,10 +40,10 @@ coffee.prototype = {
 		jugVelocity.start();
 
 		//emit the coffee from, the jug
-		coffeeEmitter = game.add.emitter(coffeeJug.x, 0, 0);
+		coffeeEmitter = game.add.emitter(coffeeJug.x+coffeeJug.width/2, 25, 0);
 		coffeeEmitter.gravity = 0;
 		coffeeEmitter.setXSpeed(0,0);
-		coffeeEmitter.setYSpeed(750,750);
+		coffeeEmitter.setYSpeed(700,700);
 		coffeeEmitter.setRotation(0,0);
 		//the amount of particles only needs to be 100 due to killing them later. allowing the emmiter can keep
 		coffeeEmitter.makeParticles('plane',0,50,true,false);
@@ -70,9 +68,10 @@ coffee.prototype = {
 		count = 0;
 		hpCount = 0;
 
-		mouse = this.add.image(mug.x-16,mug.y+4,'mouse');
+		mouse = this.add.image(game.world.centerX,game.world.height-55,'tutorialAtlas','sideways00');
 		mouse.anchor.setTo(0.5,0);
-		mouse.scale.setTo(0.65,0.65);
+		mouse.animations.add('mouseTutorial',Phaser.Animation.generateFrameNames('sideways',0, 7, '',2), 8 ,true);
+		mouse.animations.play('mouseTutorial');
 
 
 		//UI for the state
@@ -85,11 +84,15 @@ coffee.prototype = {
 	update: function () {
 		//move brush to pointer
 		mug.x = this.game.input.mousePointer.x;
-		coffeeEmitter.x = coffeeJug.x;
-		mouse.x = mug.x-16;
+		coffeeEmitter.x = coffeeJug.x+coffeeJug.width/2;
 
 		//calls the function on each particle/child
 		coffeeEmitter.forEach(this.checkCollision, this);
+
+		//kill the tutorial animation
+		if(stageTimer.duration<=25000){
+			mouse.kill();
+		}
 	},
 	//set random speed for the jug
 	jugSpeed: function() {
@@ -98,7 +101,8 @@ coffee.prototype = {
 			coffeeJug.body.velocity.x = game.rnd.integerInRange(180,500);
 		}
 		//vice versa
-		else if(coffeeJug.x == (game.world.width-coffeeJug.width/2)){
+		//else 
+			if(coffeeJug.x == (game.world.width-coffeeJug.width/2)){
 			coffeeJug.body.velocity.x = game.rnd.integerInRange(-500,-180);
 		}
 		//random speed in either direction if not the other 2

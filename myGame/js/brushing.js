@@ -75,6 +75,11 @@ brushing.prototype = {
 		this.gumsEmitter = game.add.emitter(0, 0, 200);
 		this.gumsEmitter.makeParticles('blood');			// image used for particles
 		this.gumsEmitter.gravity = 200;
+
+		mouse = this.add.image(game.world.centerX,game.world.height-55,'tutorialAtlas','sideways00');
+		mouse.anchor.setTo(0.5,0);
+		mouse.animations.add('mouseTutorial',Phaser.Animation.generateFrameNames('sideways',0, 7, '',2), 8 ,true);
+		mouse.animations.play('mouseTutorial');
 	},
 	update: function () {
 		//if the mouse is moving back and forth, give points
@@ -102,6 +107,11 @@ brushing.prototype = {
 		}
 
 		lastPos = game.input.speed.x;
+
+		//kill the tutorial animation
+		if(stageTimer.duration<=25000){
+			mouse.kill();
+		}
 	},
 
 	render: function () {
