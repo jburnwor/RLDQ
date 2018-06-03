@@ -26,6 +26,9 @@ coffee.prototype = {
 		bg = game.add.image(0,0,'bg');
 		light = game.add.image(0,0,'light');
 
+		//damagedSFX
+		damaged = game.add.audio('damaged');
+
 		//the pot/jug of coffee
 		coffeeJug = this.add.sprite(game.world.centerX,0,'coffeeJug');
 		game.physics.arcade.enable(coffeeJug);
@@ -127,6 +130,7 @@ coffee.prototype = {
 			hpCount++;
 			if(hpCount%5==0){
 				health-=2;
+				damaged.play('',0,1,false);
 			}
 		}		
 	},

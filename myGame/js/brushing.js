@@ -94,6 +94,9 @@ brushing.prototype = {
 		} else if (backForth(game)) {
 			//add points
 			score += 0.1;
+			if(!brushSFX.isPlaying){
+				brushSFX.play('',0,1,false);
+			}
 
 		}
 		//move brush to pointer
@@ -112,6 +115,7 @@ brushing.prototype = {
 		if(stageTimer.duration<=25000){
 			mouse.kill();
 		}
+
 	},
 
 	render: function () {
@@ -173,20 +177,15 @@ function backForth(game) {
 			return false;
 		} else {
 			//points
-			if(!brushSFX.isPlaying){
-				brushSFX.play('',0,1,false);
-			}
 			return true;
 		}
+
 	} else if (lastPos < 0) {
 		if (game.input.speed.x < 0) {
 			//no points
 			return false;
 		} else {
 			//points
-			if(!brushSFX.isPlaying){
-				brushSFX.play('',0,1,false);
-			}
 			return true;
 		}
 	}
