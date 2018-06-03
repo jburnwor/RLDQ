@@ -108,7 +108,7 @@ brushing.prototype = {
 
 		//game.debug.bodyInfo(brush, 32, 32);
 
-		game.debug.body(brush);
+		//game.debug.body(brush);
 
 		//game.debug.geom(allTeeth, '#ff0000', false);
 
