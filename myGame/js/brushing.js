@@ -18,6 +18,7 @@ brushing.prototype = {
 
 		this.load.path = 'assets/audio/';
 		this.load.audio('damaged', ['damaged.ogg']);
+		this.load.audio('brushSFX', 'brushSFX.ogg');
 
 	},
 
@@ -28,6 +29,8 @@ brushing.prototype = {
 		var yGap = (8 * 64) + 8;
 
 		game.physics.startSystem(Phaser.Physics.ARCADE);
+
+		brushSFX = game.add.audio('brushSFX');
 
 		//create the background
 		var bg = this.add.sprite(0, 0, 'bg');
@@ -67,6 +70,8 @@ brushing.prototype = {
 		stageTimer.add(30000, function () { console.log('timer'), game.state.start('stamping') }, game);
 		stageTimer.start();
 
+		timeDisplay = new TimeDisplay(stageTimer);
+
 		this.gumsEmitter = game.add.emitter(0, 0, 200);
 		this.gumsEmitter.makeParticles('blood');			// image used for particles
 		this.gumsEmitter.gravity = 200;
@@ -103,7 +108,7 @@ brushing.prototype = {
 
 		//game.debug.bodyInfo(brush, 32, 32);
 
-		game.debug.body(brush);
+		//game.debug.body(brush);
 
 		//game.debug.geom(allTeeth, '#ff0000', false);
 
@@ -158,6 +163,9 @@ function backForth(game) {
 			return false;
 		} else {
 			//points
+			if(!brushSFX.isPlaying){
+				brushSFX.play('',0,1,false);
+			}
 			return true;
 		}
 	} else if (lastPos < 0) {
@@ -166,6 +174,9 @@ function backForth(game) {
 			return false;
 		} else {
 			//points
+			if(!brushSFX.isPlaying){
+				brushSFX.play('',0,1,false);
+			}
 			return true;
 		}
 	}

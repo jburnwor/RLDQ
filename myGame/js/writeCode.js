@@ -5,6 +5,7 @@ code.prototype = {
 		this.load.atlas('codeTextAtlas','codeTextAtlas.png','codeTextAtlas.json');
 		this.load.image('bg','background.png');
 		this.load.atlas('tutorialAtlas','../tutorialAtlas.png','../tutorialAtlas.json');
+		this.load.atlas('codeAnimation','codeAnimation.png','codeAnimation.json')
 		this.load.path = 'assets/fonts/';
 		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
 		this.load.audio('keySound','../audio/codeMove.ogg');
@@ -16,23 +17,30 @@ code.prototype = {
 				'FOCUS','WORTH','ACCOUNT','BENEFIT','COMPANY','DEFICIT','ECONOMY','MANAGER','PENSION'];
 
 
+		//add the background
 		game.add.image(0,0,'bg');
 
+		//animation in the background
+		codeAnimation = this.add.sprite(0,0,'codeAnimation',26);
+		codeAnimation.animations.add('codeAnimation',Phaser.Animation.generateFrameNames('codeAnim',0, 39, '',3), 2 ,true);
+		codeAnimation.animations.play('codeAnimation');
+
+		//add the audio
 		keySound = game.add.audio('keySound');
 
-		wasd=game.add.image(16,260,'tutorialAtlas','WASD0');
-		wasd.scale.setTo(0.6,0.6);
+		//display the controls of the state
+		wasd=game.add.image(16,273,'tutorialAtlas','WASD0');
+		wasd.animations.add('codeAnimation',Phaser.Animation.generateFrameNames('WASD',0, 1, '',1), 1 ,true);
+		wasd.animations.play('codeAnimation')
+		bkSpace=game.add.image(game.world.centerX-25,305,'tutorialAtlas','BACKSPACE');
+		entr=game.add.image(game.world.width-110,305,'tutorialAtlas','ENTER');
 
-		bkSpace=game.add.image(game.world.centerX-25,290,'tutorialAtlas','BACKSPACE');
-		bkSpace.scale.setTo(0.75,0.75);
-
-		entr=game.add.image(game.world.width-100,256,'tutorialAtlas','ENTER');
-		entr.scale.setTo(0.75,0.75);
-
+		//stageTimer
 		stageTimer = game.time.create(false);
 		stageTimer.add(30000,function(){this.checkNeeded, console.log('timer'), game.state.start('alarmClock')},game);
 		stageTimer.start();
 
+		//the amount they needed
 		wordsNeeded = 4;
 
 		//here we add enter and backspace as keys the player can press
@@ -50,6 +58,7 @@ code.prototype = {
 		//display a selection cursor
 		select = new Phaser.Rectangle(16,y,35,35);
 
+		//spawn the letters for the "keyboard"
 		for(var i = 1;i <=26; i++){
 			if(i<10){
 				var id = '0'+ i;
@@ -68,6 +77,7 @@ code.prototype = {
 			x+=36;
 		}
 
+		//add inputs
 		up = game.input.keyboard.addKey(Phaser.Keyboard.W);
     	down = game.input.keyboard.addKey(Phaser.Keyboard.S);
     	left = game.input.keyboard.addKey(Phaser.Keyboard.A);
@@ -77,13 +87,17 @@ code.prototype = {
     	leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
     	rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
 
+    	//I add the time display here to be below the words they need to type since the player REALLY needs to see what's needed
     	timeDisplay = new TimeDisplay(stageTimer);
 
+    	//what they have typed
     	input = game.add.bitmapText(game.world.centerX,game.world.centerY,"font", '', 78);
 		input.anchor.setTo(0.5,0.5);
 
+		//the word they need to type
     	scoreWord = words[Math.floor(Math.random() * words.length)];
 
+    	//display the scoreWord as well as how many words that are left
 		typeThis = game.add.bitmapText(game.world.centerX,game.world.centerY-160,"font", 'TYPE: ' + scoreWord, 60);
 		typeThis.anchor.setTo(0.5,0);
 		typeThis.tint = 0x39ff14;
@@ -92,17 +106,20 @@ code.prototype = {
 		amountDisplay.anchor.setTo(0.5,0);
 		amountDisplay.tint = 0x39ff14;
 
-
+		//the UI display
     	scoreDisplay = new Score();
     	healthBG = new HealthBG();
     	healthDisplay = new Health();
     	
-
-
 	},
 	update: function(){
+
 		this.move();
 		this.checkWord();
+		//if they complete early send to next state
+		if(wordsNeeded==0){
+			game.state.start('alarmClock');
+		}
 	},
 	move: function(){
 		//move our select cursor and allow it to wrap around the keyboard
@@ -155,6 +172,7 @@ code.prototype = {
 	enterLetter: function(){
 		keySound.play('',0,2,false);
 		//I'm in awe at the size of this lad, the absolute unit
+		//check what letter they are on then display it if they hit enter
 		if(index==1){input.text = input.text + 'A'}
 		else if(index==2){input.text = input.text + 'B'}
 		else if(index==3){input.text = input.text + 'C'}
@@ -183,13 +201,15 @@ code.prototype = {
 		else if(index==26){input.text = input.text + 'Z'}
 	},
 
-
+	//show what letter is selected
 	render:function(){
 		game.debug.geom(select,'#39ff14',false);
 	},
+	//check if the typed word is is the score word
 	checkWord: function(){
 		if(scoreWord===input.text){
 			score+=(scoreWord.length*3);
+			//change to a random word in the list for the next word
 			scoreWord = words[Math.floor(Math.random() * words.length)];
 			typeThis.text = 'TYPE: ' + scoreWord;
 			input.text = '';
@@ -198,10 +218,13 @@ code.prototype = {
 		}
 	},
 
+	//so they can delete letters if they mess up
 	backSpace: function(){
 		keySound.play('',0,2,false);
 		input.text = input.text.substring(0,input.text.length-1);
 	},
+
+	//at the end of the state reduce their health if they have words left
 	checkNeeded: function(){
 		if(wordsNeeded>0){
 			health-=wordsNeeded*4
