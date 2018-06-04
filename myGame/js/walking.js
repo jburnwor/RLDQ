@@ -15,7 +15,8 @@ var walking = function () {
 }
 walking.prototype = {
     preload: function () {
-        this.load.image('temp', 'assets/img/playerTemp.png')
+        this.load.path = 'assets/img/'
+        this.load.image('temp', 'playerTemp.png')
         this.load.path = 'assets/img/walking/';
         this.load.image('player', 'sprite.png')
         this.load.image('player1', 'sprite/charWalk00.png');
@@ -29,9 +30,9 @@ walking.prototype = {
         this.load.path = 'assets/audio/';
         this.load.audio('damaged', ['damaged.ogg']);
 
-        this.load.path = 'assets/fonts/';
+        /* this.load.path = 'assets/fonts/';
         this.load.bitmapFont('font', 'm5x7.png', 'm5x7.xml');
-        this.stage.disableVisibilityChange = true;
+        this.stage.disableVisibilityChange = true; */
 
     },
 
@@ -70,9 +71,9 @@ walking.prototype = {
         healthDisplay = new Health();
 
         //timer for the stage
-        /* stageTimer = game.time.create(false);
+        stageTimer = game.time.create(false);
         stageTimer.add(30000, function () { console.log('timer'), game.state.start('stamping') }, game);
-        stageTimer.start(); */
+        stageTimer.start();
 
     },
     update: function () {

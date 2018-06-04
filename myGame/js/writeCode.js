@@ -36,7 +36,7 @@ code.prototype = {
 
 		//stageTimer
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000,function(){this.checkNeeded, console.log('timer'), game.state.start('alarmClock')},game);
+		stageTimer.add(30000,function(){this.checkNeeded, console.log('timer'), game.state.start('dishes')},game);
 		stageTimer.start();
 
 		//the amount they needed

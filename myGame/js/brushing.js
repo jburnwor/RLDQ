@@ -49,8 +49,6 @@ brushing.prototype = {
 		}
 
 		mouth = this.add.sprite(0, 0, 'mouth');
-		//mouth.enableBody = true;
-		//	mouth.body.immovable = true;
 
 		brush = this.add.sprite(200, 200, 'brush');
 		game.physics.enable(brush);
@@ -67,7 +65,7 @@ brushing.prototype = {
 
 		//timer for the stage
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000, function () { console.log('timer'), game.state.start('stamping') }, game);
+		stageTimer.add(30000, function () { console.log('timer'), game.state.start('walking') }, game);
 		stageTimer.start();
 
 		timeDisplay = new TimeDisplay(stageTimer);

@@ -10,10 +10,10 @@ var dishes = function () {
 }
 dishes.prototype = {
 	preload: function () {
-		this.load.image('spongeTemp', 'assets/img/playerTemp.png')
 		this.load.path = 'assets/img/washingDishes/';
 		this.load.image('bg', 'background.png');
 		this.load.image('light', 'Light.png');
+		this.load.image('sponge', 'Knife/sponge.png')
 		this.load.image('knife1', 'Knife/knife1.png');
 		this.load.image('knife2', 'Knife/knife2.png');
 		this.load.image('knife3', 'Knife/knife3.png');
@@ -42,18 +42,18 @@ dishes.prototype = {
 		var bg = this.add.sprite(0, 0, 'bg');
 		var bg = this.add.sprite(0, 0, 'light');
 
-		//add in some background knifes
+		/* //add in some background knifes
 		this.add.sprite(5, 330, 'knife1');
 		this.add.sprite(5, 330, 'grime1');
 		this.add.sprite(8, 340, 'knife1');
-		this.add.sprite(8, 340, 'grime1');
+		this.add.sprite(8, 340, 'grime1'); */
 
-		var temp = this.add.sprite(500, 350, 'knife1');
+		/* var temp = this.add.sprite(500, 350, 'knife1');
 		temp.angle += 180;
 		temp = this.add.sprite(510, 340, 'knife1');
 		temp.angle += 180;
 		temp = this.add.sprite(520, 330, 'knife1');
-		temp.angle += 180;
+		temp.angle += 180; */
 
 		//add in the knife that is going to be cleaned
 		knife = this.add.sprite(-200, 250, 'knife1');
@@ -63,7 +63,7 @@ dishes.prototype = {
 		knifeGrime.scale.setTo(1.5, 1.5);
 		game.physics.enable(knife);
 
-		sponge = this.add.sprite(200, 200, 'spongeTemp');
+		sponge = this.add.sprite(200, 200, 'sponge');
 		game.physics.enable(sponge);
 		sponge.anchor.set(0.5, 0.5);
 		sponge.tint = String(0xFFFF00);
@@ -75,10 +75,10 @@ dishes.prototype = {
 
 		cut = new Phaser.Rectangle(10, 250, 175, 6);
 
-		/* //timer for the stage
+		//timer for the stage
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000, function () { console.log('timer'), game.state.start('stamping') }, game);
-		stageTimer.start(); */
+		stageTimer.add(30000, function () { console.log('timer'), game.state.start('alarmClock') }, game);
+		stageTimer.start();
 
 		this.handsEmitter = game.add.emitter(0, 0, 200);
 		this.handsEmitter.makeParticles('blood');			// image used for particles
