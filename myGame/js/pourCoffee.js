@@ -9,6 +9,7 @@ coffee.prototype = {
 		this.load.image('mug','coffeeMug.png');
 		this.load.image('plane', 'coffee.png');
 		this.load.image('coffeeJug','coffeePot.png');
+		this.load.atlas('tutorialAtlas','../tutorialAtlas.png','../tutorialAtlas.json');
 		this.load.path = 'assets/fonts/';
         this.load.bitmapFont('font','m5x7.png','m5x7.xml');
 	},
@@ -35,7 +36,7 @@ coffee.prototype = {
 		coffeeJug.drag = 15;
 		coffeeJug.body.collideWorldBounds = true;
 		coffeeJug.anchor.setTo(0.5,0);
-		coffeeJug.body.setSize(coffeeJug.width-50, coffeeJug.height, 50,0);
+		coffeeJug.body.setSize(coffeeJug.width-25, coffeeJug.height, -25,0);
 
 		//make the pot/jub move back and forth at random speeds
 		jugVelocity = game.time.create(false);
@@ -43,7 +44,7 @@ coffee.prototype = {
 		jugVelocity.start();
 
 		//emit the coffee from, the jug
-		coffeeEmitter = game.add.emitter(coffeeJug.x+coffeeJug.width/2, 25, 0);
+		coffeeEmitter = game.add.emitter(coffeeJug.x-coffeeJug.width, 75, 0);
 		coffeeEmitter.gravity = 0;
 		coffeeEmitter.setXSpeed(0,0);
 		coffeeEmitter.setYSpeed(700,700);
@@ -87,7 +88,7 @@ coffee.prototype = {
 	update: function () {
 		//move brush to pointer
 		mug.x = this.game.input.mousePointer.x;
-		coffeeEmitter.x = coffeeJug.x+coffeeJug.width/2;
+		coffeeEmitter.x = coffeeJug.x-coffeeJug.width/2;
 
 		//calls the function on each particle/child
 		coffeeEmitter.forEach(this.checkCollision, this);
@@ -100,12 +101,11 @@ coffee.prototype = {
 	//set random speed for the jug
 	jugSpeed: function() {
 		//if the jug is on the left most part, move it right
-		if(coffeeJug.x == coffeeJug.width/2){
+		if(coffeeJug.x == 90.5){
 			coffeeJug.body.velocity.x = game.rnd.integerInRange(180,500);
 		}
 		//vice versa
-		//else 
-			if(coffeeJug.x == (game.world.width-coffeeJug.width/2)){
+		else if(coffeeJug.x == 496.5){
 			coffeeJug.body.velocity.x = game.rnd.integerInRange(-500,-180);
 		}
 		//random speed in either direction if not the other 2
