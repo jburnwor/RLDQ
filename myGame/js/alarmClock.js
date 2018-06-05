@@ -117,6 +117,11 @@ alarmClock.prototype = {
 
 	},
 	update: function(){
+		//send to game over if health is 0
+		if(health < 1){
+			game.state.start('gameOver');
+		}
+		
 		//fire the first event manually to make everything work
 		if(doOnce){
 			this.updateClock();

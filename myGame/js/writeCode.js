@@ -112,6 +112,10 @@ code.prototype = {
     	
 	},
 	update: function(){
+		//send to game over if health is 0
+		if(health < 1){
+			game.state.start('gameOver');
+		}
 
 		this.move();
 		this.checkWord();

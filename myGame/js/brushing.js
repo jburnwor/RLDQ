@@ -31,6 +31,7 @@ brushing.prototype = {
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 
 		brushSFX = game.add.audio('brushSFX');
+		damagedSound = game.add.audio('damaged');
 
 		//create the background
 		var bg = this.add.sprite(0, 0, 'bg');
@@ -80,10 +81,16 @@ brushing.prototype = {
 		mouse.animations.play('mouseTutorial');
 	},
 	update: function () {
+		//send to game over if health is 0
+		if(health < 1){
+			game.state.start('gameOver');
+		}
+
 		//if the mouse is moving back and forth, give points
 		if (backForth(game) && !(allTeeth.intersects(brush.getBounds()))) {
 			health -= 0.5;
 
+			damagedSound.play('',0,1,false);
 
 			this.gumsEmitter.x = brush.x;
 			this.gumsEmitter.y = brush.y;

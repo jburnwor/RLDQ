@@ -15,11 +15,7 @@ dishes.prototype = {
 		this.load.image('light', 'Light.png');
 		this.load.image('sponge', 'Knife/sponge.png')
 		this.load.image('knife1', 'Knife/knife1.png');
-		this.load.image('knife2', 'Knife/knife2.png');
-		this.load.image('knife3', 'Knife/knife3.png');
 		this.load.image('grime1', 'Knife/Grime/grime1.png');
-		this.load.image('grime2', 'Knife/Grime/grime2.png');
-		this.load.image('grime3', 'Knife/Grime/grime3.png');
 
 		this.load.path = 'assets/img/brushing/';
 		this.load.image('blood', 'blood.png');
@@ -42,19 +38,6 @@ dishes.prototype = {
 		var bg = this.add.sprite(0, 0, 'bg');
 		var bg = this.add.sprite(0, 0, 'light');
 
-		/* //add in some background knifes
-		this.add.sprite(5, 330, 'knife1');
-		this.add.sprite(5, 330, 'grime1');
-		this.add.sprite(8, 340, 'knife1');
-		this.add.sprite(8, 340, 'grime1'); */
-
-		/* var temp = this.add.sprite(500, 350, 'knife1');
-		temp.angle += 180;
-		temp = this.add.sprite(510, 340, 'knife1');
-		temp.angle += 180;
-		temp = this.add.sprite(520, 330, 'knife1');
-		temp.angle += 180; */
-
 		//add in the knife that is going to be cleaned
 		knife = this.add.sprite(-200, 250, 'knife1');
 		knife.scale.setTo(1.5, 1.5);
@@ -73,6 +56,7 @@ dishes.prototype = {
 		healthBG = new HealthBG();
 		healthDisplay = new Health();
 
+		//hitbox for taking damage
 		cut = new Phaser.Rectangle(10, 250, 175, 6);
 
 		//timer for the stage
@@ -80,18 +64,26 @@ dishes.prototype = {
 		stageTimer.add(30000, function () { console.log('timer'), game.state.start('alarmClock') }, game);
 		stageTimer.start();
 
+		//emitter for blood when damaged
 		this.handsEmitter = game.add.emitter(0, 0, 200);
 		this.handsEmitter.makeParticles('blood');			// image used for particles
 		this.handsEmitter.gravity = 800;
 	},
 	update: function () {
+		//send to game over if health is 0
+		if (health < 1) {
+			game.state.start('gameOver');
+		}
 
+		//set grime to be on the knife
 		knifeGrime.x = knife.x;
 		knifeGrime.y = knife.y;
 
+		//set hitbox for when the player gets cut
 		cut.x = knife.x + 2;
 		cut.y = knife.y + 30;
 
+		//make knife float from left to right and loop back to the left after it goes off screen
 		knife.x += 1;
 		if (knife.x > (game.width + knife.width / 4)) {
 			knife.x = 0 - knife.width;
@@ -106,21 +98,23 @@ dishes.prototype = {
 			console.log(knifeGrime.alpha);
 			knifeGrime.alpha = 1;
 		}
-		//move brush to pointer
+		//move sponge to pointer
 		sponge.x = this.game.input.mousePointer.x;
 		sponge.y = this.game.input.mousePointer.y;
 
+		//collition with cut hitbox to take away health
 		if (cut.intersects(sponge.getBounds())) {
 			health -= 0.1;
-			//if the mouse is moving back and forth, give points
-		this.handsEmitter.x = sponge.x;
-		this.handsEmitter.y = sponge.y;
-		this.handsEmitter.start(true, 800, null, 10);	// (explode, lifespan, freq, quantity)
+			//start blood emitter
+			this.handsEmitter.x = sponge.x;
+			this.handsEmitter.y = sponge.y;
+			this.handsEmitter.start(true, 800, null, 10);	// (explode, lifespan, freq, quantity)
 		} else if (backForth(game) && game.physics.arcade.overlap(knife, sponge)) {
+			//make the grime slowly go away by brushing it with the sponge
 			knifeGrime.alpha -= 0.01;
 			console.log('yes');
 		}
-		
+
 
 		lastPos = game.input.speed.x;
 	},
