@@ -41,8 +41,8 @@ walking.prototype = {
 
         //set background as a tilesprite and ajust the size to fit in the screen
         this.bg = game.add.tileSprite(0, 0, 512, 512, 'bg');
-        this.bg.tileScale.x = 4;
-        this.bg.tileScale.y = 4;
+        // this.bg.tileScale.x = 4;
+        // this.bg.tileScale.y = 4;
 
         //create player sprite and all its frames so the frames can be shown later 
         //the animation is done this way currenly to get it working since the 
@@ -53,9 +53,9 @@ walking.prototype = {
         this.playerRight = this.add.sprite(50, 450, 'player2');
         this.playerRight.alpha = 0;
 
-        this.player.scale.setTo(2, 2);
-        this.playerLeft.scale.setTo(2, 2);
-        this.playerRight.scale.setTo(2, 2);
+        // this.player.scale.setTo(2, 2);
+        // this.playerLeft.scale.setTo(2, 2);
+        // this.playerRight.scale.setTo(2, 2);
 
         //set up emitter to indicate when the player double presses a direction and losses health
         this.impact = game.add.emitter(0, 0, 50);
@@ -101,7 +101,7 @@ walking.prototype = {
                 this.player.alpha = 1;
                 this.playerLeft.alpha = 0;
                 this.playerRight.alpha = 0;
-                this.bg.tilePosition.x -= 2;
+                this.bg.tilePosition.x -= 8;
                 damagedSound.play('',0,1,false);
             }
 
@@ -126,10 +126,10 @@ walking.prototype = {
                 //add score for the first press of the left button 
                 score += 0.1;
                 //move background 
-                this.bg.tilePosition.x -= 2;
+                this.bg.tilePosition.x -= 8;
                 stepSound.play('',0,0.5,false);
             } else if (this.leftJustPressed) {
-                this.bg.tilePosition.x -= 2;
+                this.bg.tilePosition.x -= 8;
                 console.log('second left');
                 //set off the emitter
                 this.impact.alpha = 1;
@@ -156,10 +156,10 @@ walking.prototype = {
                 this.player.alpha = 0;
                 this.playerLeft.alpha = 0;
                 this.playerRight.alpha = 1;
-                this.bg.tilePosition.x -= 2;
+                this.bg.tilePosition.x -= 8;
                 stepSound.play('',0,0.7,false);
             } else if (this.rightJustPressed) {
-                this.bg.tilePosition.x -= 2;
+                this.bg.tilePosition.x -= 8;
                 console.log('double right')
                 this.impact.alpha = 1;
                 this.impact.start(true, 100, null, 10);	// (explode, lifespan, freq, quantity)
