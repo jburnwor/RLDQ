@@ -91,6 +91,11 @@ alarmClock.prototype = {
 		arrow.animations.add('arrow',Phaser.Animation.generateFrameNames('instructionArrow',1, 4, '',3), 8 ,true);
 		arrow.animations.play('arrow');
 
+		if(day==1){
+				instuctionText = game.add.bitmapText(game.world.centerX, game.world.height-128,'font', 'Get to 8 AM',72);
+				instuctionText.anchor.setTo(0.5,0);
+		}
+	
 		//to flag the instuctional arrows to remove it
 		tryClick = true;
 
@@ -117,6 +122,11 @@ alarmClock.prototype = {
 
 	},
 	update: function(){
+		//send to game over if health is 0
+		if(health < 1){
+			game.state.start('gameOver');
+		}
+		
 		//fire the first event manually to make everything work
 		if(doOnce){
 			this.updateClock();

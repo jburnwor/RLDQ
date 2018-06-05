@@ -121,6 +121,11 @@ bed.prototype = {
 
 	},
 	update: function(){
+		//send to game over if health is 0
+		if(health < 1){
+			game.state.start('gameOver');
+		}
+		
 		//if they need to reset the state
 		this.reset();
 		//once the lights turn off allow them to move and show the controls
@@ -178,6 +183,12 @@ bed.prototype = {
 			console.log('yay');
 			game.state.start('brushing');
 			score+=100;
+			if(health<100){
+				health+=20;
+				if(health>100){
+					health = 100;
+				}
+			}
 		}
 		if(game.physics.arcade.collide(player, things)){
 			health-=2;

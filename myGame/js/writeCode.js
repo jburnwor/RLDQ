@@ -4,7 +4,6 @@ code.prototype = {
 		this.load.path = 'assets/img/writeCode/'
 		this.load.atlas('codeTextAtlas','codeTextAtlas.png','codeTextAtlas.json');
 		this.load.image('bg','background.png');
-		this.load.atlas('tutorialAtlas','../tutorialAtlas.png','../tutorialAtlas.json');
 		this.load.atlas('codeAnimation','codeAnimation.png','codeAnimation.json')
 		this.load.path = 'assets/fonts/';
 		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
@@ -37,7 +36,7 @@ code.prototype = {
 
 		//stageTimer
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000,function(){this.checkNeeded, console.log('timer'), game.state.start('alarmClock')},game);
+		stageTimer.add(30000,function(){this.checkNeeded, console.log('timer'), game.state.start('dishes')},game);
 		stageTimer.start();
 
 		//the amount they needed
@@ -113,12 +112,16 @@ code.prototype = {
     	
 	},
 	update: function(){
+		//send to game over if health is 0
+		if(health < 1){
+			game.state.start('gameOver');
+		}
 
 		this.move();
 		this.checkWord();
 		//if they complete early send to next state
 		if(wordsNeeded==0){
-			game.state.start('alarmClock');
+			game.state.start('dishes');
 		}
 	},
 	move: function(){
