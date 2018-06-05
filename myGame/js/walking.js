@@ -11,7 +11,6 @@ var walking = function () {
     this.playerRight;
     this.bg;
     this.impact;
-    this.walkCounter = 0;
 }
 walking.prototype = {
     preload: function () {
@@ -30,22 +29,20 @@ walking.prototype = {
         this.load.path = 'assets/audio/';
         this.load.audio('damaged', ['damaged.ogg']);
 
-        /* this.load.path = 'assets/fonts/';
-        this.load.bitmapFont('font', 'm5x7.png', 'm5x7.xml');
-        this.stage.disableVisibilityChange = true; */
-
     },
 
     create: function () {
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        /* //create the background
-        var bg = this.add.sprite(0, 0, 'bg'); */
+        //set background as a tilesprite and ajust the size to fit in the screen
         this.bg = game.add.tileSprite(0, 0, 512, 512, 'bg');
         this.bg.tileScale.x = 4;
         this.bg.tileScale.y = 4;
 
+        //create player sprite and all its frames so the frames can be shown later 
+        //the animation is done this way currenly to get it working since the 
+        //sprites are not currently in a spritesheet or atlas
         this.player = this.add.sprite(50, 450, 'player');
         this.playerLeft = this.add.sprite(50, 450, 'player1');
         this.playerLeft.alpha = 0;
@@ -56,6 +53,7 @@ walking.prototype = {
         this.playerLeft.scale.setTo(2, 2);
         this.playerRight.scale.setTo(2, 2);
 
+        //set up emitter to indicate when the player double presses a direction and losses health
         this.impact = game.add.emitter(0, 0, 50);
         this.impact.makeParticles('temp');			// image used for particles
         this.impact.gravity = 800;
@@ -77,8 +75,14 @@ walking.prototype = {
 
     },
     update: function () {
-        //note to self: make it so going left and right makes you go faster and more score 
+        //send to game over if health is 0
+		if(health < 1){
+			game.state.start('gameOver');
+        }
+        
+        //if else checks for pressing left or right
 
+        //check when both left and right is pressed and take away health
         if ((game.input.keyboard.justPressed(Phaser.Keyboard.Left) || game.input.keyboard.justPressed(Phaser.Keyboard.A)) && (game.input.keyboard.justPressed(Phaser.Keyboard.Right) || game.input.keyboard.justPressed(Phaser.Keyboard.D))) {
 
             this.player.tint = 0xfffff0;
@@ -86,6 +90,7 @@ walking.prototype = {
             if (!this.bothJustPressed) {
                 console.log('bad both');
                 health -= 3;
+                //set player frame to show
                 this.player.alpha = 1;
                 this.playerLeft.alpha = 0;
                 this.playerRight.alpha = 0;
@@ -102,22 +107,22 @@ walking.prototype = {
             //set boolean to show both directions were pressed
             this.bothJustPressed = true;
 
+            //check if left is pressed
         } else if (game.input.keyboard.justPressed(Phaser.Keyboard.LEFT) || game.input.keyboard.justPressed(Phaser.Keyboard.A)) {
-            this.player.tint = 0xff0000;
+            //check to see if button has already been pressed
             if (!this.leftJustPressed) {
-                /* this.player.y = 415;
-                this.player.x = 15; */
+                //set player frame to show
                 this.player.alpha = 0;
                 this.playerLeft.alpha = 1;
                 this.playerRight.alpha = 0;
                 //add score for the first press of the left button 
                 score += 0.1;
+                //move background 
                 this.bg.tilePosition.x -= 2;
-                //reset counter
-                this.walkCounter = 0;
             } else if (this.leftJustPressed) {
                 this.bg.tilePosition.x -= 2;
                 console.log('second left');
+                //set off the emitter
                 this.impact.alpha = 1;
                 this.impact.start(true, 100, null, 10);	// (explode, lifespan, freq, quantity)
                 health -= 5;
@@ -135,16 +140,12 @@ walking.prototype = {
 
         } else if (game.input.keyboard.justPressed(Phaser.Keyboard.RIGHT) || game.input.keyboard.justPressed(Phaser.Keyboard.D)) {
             //same as left but for right button
-            this.player.tint = 0x001eff;
-            /*  this.player.y = 450;
-             this.player.x = 50; */
 
             if (!this.rightJustPressed) {
                 score += 0.1;
                 this.player.alpha = 0;
                 this.playerLeft.alpha = 0;
                 this.playerRight.alpha = 1;
-                this.walkCounter = 0;
                 this.bg.tilePosition.x -= 2;
             } else if (this.rightJustPressed) {
                 this.bg.tilePosition.x -= 2;
@@ -166,7 +167,6 @@ walking.prototype = {
         function fadeImpact() {
 
             this.impact.start(true, 100, null, 10);	// (explode, lifespan, freq, quantity)
-            //game.add.tween(this.impact).to( { alpha: 0 }, 500, Phaser.Easing.Linear.None, true);
         }
     },
 
