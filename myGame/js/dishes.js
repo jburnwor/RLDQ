@@ -38,6 +38,9 @@ dishes.prototype = {
 		var bg = this.add.sprite(0, 0, 'bg');
 		var bg = this.add.sprite(0, 0, 'light');
 
+		damagedSound = game.add.audio('damaged');
+		washingSound = game.add.audio('brushSFX');
+
 		//add in the knife that is going to be cleaned
 		knife = this.add.sprite(-200, 250, 'knife1');
 		knife.scale.setTo(1.5, 1.5);
@@ -63,6 +66,8 @@ dishes.prototype = {
 		stageTimer = game.time.create(false);
 		stageTimer.add(30000, function () { console.log('timer'), game.state.start('alarmClock') }, game);
 		stageTimer.start();
+
+		timeDisplay = new TimeDisplay(stageTimer);
 
 		//emitter for blood when damaged
 		this.handsEmitter = game.add.emitter(0, 0, 200);
@@ -105,12 +110,16 @@ dishes.prototype = {
 		//collition with cut hitbox to take away health
 		if (cut.intersects(sponge.getBounds())) {
 			health -= 0.1;
+			damagedSound.play('',0,1,false);
 			//start blood emitter
 			this.handsEmitter.x = sponge.x;
 			this.handsEmitter.y = sponge.y;
 			this.handsEmitter.start(true, 800, null, 10);	// (explode, lifespan, freq, quantity)
 		} else if (backForth(game) && game.physics.arcade.overlap(knife, sponge)) {
 			//make the grime slowly go away by brushing it with the sponge
+			if(!washingSound.isPlaying){
+				washingSound.play('',0,1,false);
+			}
 			knifeGrime.alpha -= 0.01;
 			console.log('yes');
 		}

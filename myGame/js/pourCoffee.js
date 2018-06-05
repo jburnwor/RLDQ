@@ -12,6 +12,7 @@ coffee.prototype = {
 		this.load.atlas('tutorialAtlas','../tutorialAtlas.png','../tutorialAtlas.json');
 		this.load.path = 'assets/fonts/';
         this.load.bitmapFont('font','m5x7.png','m5x7.xml');
+        this.load.audio('pouring',['../audio/coffeeALT.ogg']);
 	},
 
 	create: function () {
@@ -29,6 +30,7 @@ coffee.prototype = {
 
 		//damagedSFX
 		damaged = game.add.audio('damaged');
+		pouring = game.add.audio('pouring');
 
 		//the pot/jug of coffee
 		coffeeJug = this.add.sprite(game.world.centerX,0,'coffeeJug');
@@ -125,6 +127,9 @@ coffee.prototype = {
 		if(game.physics.arcade.collide(particle,mug)){
 			particle.kill();
 			count++;
+			if(!pouring.isPlaying){
+				pouring.play('',0,1.5,false);
+			}
 			if(count%5==0){
 				score+=1;
 			}
@@ -133,7 +138,7 @@ coffee.prototype = {
 		if(game.physics.arcade.collide(particle,killPlane)){
 			particle.kill();
 			hpCount++;
-			if(hpCount%5==0){
+			if(hpCount%6==0){
 				health-=2;
 				damaged.play('',0,1,false);
 			}

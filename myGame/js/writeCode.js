@@ -121,7 +121,7 @@ code.prototype = {
 		this.checkWord();
 		//if they complete early send to next state
 		if(wordsNeeded==0){
-			game.state.start('alarmClock');
+			game.state.start('dishes');
 		}
 	},
 	move: function(){

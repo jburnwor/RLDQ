@@ -183,6 +183,12 @@ bed.prototype = {
 			console.log('yay');
 			game.state.start('brushing');
 			score+=100;
+			if(health<100){
+				health+=20;
+				if(health>100){
+					health = 100;
+				}
+			}
 		}
 		if(game.physics.arcade.collide(player, things)){
 			health-=2;

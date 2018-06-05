@@ -28,12 +28,16 @@ walking.prototype = {
 
         this.load.path = 'assets/audio/';
         this.load.audio('damaged', ['damaged.ogg']);
+        this.load.audio('step', ['stepALT.ogg']);
 
     },
 
     create: function () {
 
         game.physics.startSystem(Phaser.Physics.ARCADE);
+
+        damagedSound = game.add.audio('damaged');
+        stepSound = game.add.audio('step');
 
         //set background as a tilesprite and ajust the size to fit in the screen
         this.bg = game.add.tileSprite(0, 0, 512, 512, 'bg');
@@ -66,12 +70,15 @@ walking.prototype = {
 
         //to display the score
         scoreDisplay = new Score();
+        healthBG = new HealthBG();
         healthDisplay = new Health();
 
         //timer for the stage
         stageTimer = game.time.create(false);
         stageTimer.add(30000, function () { console.log('timer'), game.state.start('stamping') }, game);
         stageTimer.start();
+
+        timeDisplay = new TimeDisplay(stageTimer);
 
     },
     update: function () {
@@ -95,6 +102,7 @@ walking.prototype = {
                 this.playerLeft.alpha = 0;
                 this.playerRight.alpha = 0;
                 this.bg.tilePosition.x -= 2;
+                damagedSound.play('',0,1,false);
             }
 
             //reset booleans 
@@ -119,6 +127,7 @@ walking.prototype = {
                 score += 0.1;
                 //move background 
                 this.bg.tilePosition.x -= 2;
+                stepSound.play('',0,0.5,false);
             } else if (this.leftJustPressed) {
                 this.bg.tilePosition.x -= 2;
                 console.log('second left');
@@ -126,6 +135,7 @@ walking.prototype = {
                 this.impact.alpha = 1;
                 this.impact.start(true, 100, null, 10);	// (explode, lifespan, freq, quantity)
                 health -= 5;
+                damagedSound.play('',0,1,false);
 
             }
 
@@ -147,12 +157,14 @@ walking.prototype = {
                 this.playerLeft.alpha = 0;
                 this.playerRight.alpha = 1;
                 this.bg.tilePosition.x -= 2;
+                stepSound.play('',0,0.7,false);
             } else if (this.rightJustPressed) {
                 this.bg.tilePosition.x -= 2;
                 console.log('double right')
                 this.impact.alpha = 1;
                 this.impact.start(true, 100, null, 10);	// (explode, lifespan, freq, quantity)
                 health -= 5;
+                damagedSound.play('',0,1,false);
             }
             //reset booleans
             if (this.leftJustPressed) {
