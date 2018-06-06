@@ -134,7 +134,7 @@ walking.prototype = {
                 //set off the emitter
                 this.impact.alpha = 1;
                 this.impact.start(true, 100, null, 10);	// (explode, lifespan, freq, quantity)
-                health -= 5;
+                health -= 3;
                 damagedSound.play('',0,1,false);
 
             }
@@ -163,7 +163,7 @@ walking.prototype = {
                 console.log('double right')
                 this.impact.alpha = 1;
                 this.impact.start(true, 100, null, 10);	// (explode, lifespan, freq, quantity)
-                health -= 5;
+                health -= 3;
                 damagedSound.play('',0,1,false);
             }
             //reset booleans
