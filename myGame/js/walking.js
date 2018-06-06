@@ -26,6 +26,8 @@ walking.prototype = {
         this.load.path = 'assets/img/brushing/'
         this.load.image('blood', 'blood.png');
 
+
+
         this.load.path = 'assets/audio/';
         this.load.audio('damaged', ['damaged.ogg']);
         this.load.audio('step', ['stepALT.ogg']);
@@ -53,9 +55,10 @@ walking.prototype = {
         this.playerRight = this.add.sprite(50, 420, 'player2');
         this.playerRight.alpha = 0;
 
-        // this.player.scale.setTo(2, 2);
-        // this.playerLeft.scale.setTo(2, 2);
-        // this.playerRight.scale.setTo(2, 2);
+        instruction = this.add.sprite(game.world.centerX,game.world.centerY,'tutorialAtlas','instruction00');
+		instruction.anchor.setTo(0.5,0.5);
+		instruction.animations.add('tutorial',Phaser.Animation.generateFrameNames('instruction',0, 1,'',2), 1 ,true);
+		instruction.animations.play('tutorial');
 
         //set up emitter to indicate when the player double presses a direction and losses health
         this.impact = game.add.emitter(0, 0, 50);
@@ -175,6 +178,10 @@ walking.prototype = {
 
             this.rightJustPressed = true;
         }
+
+        if(stageTimer.duration<=25000){
+			instruction.kill();
+		}
 
         function fadeImpact() {
 
