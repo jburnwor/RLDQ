@@ -128,7 +128,7 @@ walking.prototype = {
                 this.playerLeft.alpha = 1;
                 this.playerRight.alpha = 0;
                 //add score for the first press of the left button 
-                score += 0.1;
+                score += 0.15;
                 //move background 
                 this.bg.tilePosition.x -= 8;
                 stepSound.play('',0,0.5,false);
@@ -156,7 +156,7 @@ walking.prototype = {
             //same as left but for right button
 
             if (!this.rightJustPressed) {
-                score += 0.1;
+                score += 0.15;
                 this.player.alpha = 0;
                 this.playerLeft.alpha = 0;
                 this.playerRight.alpha = 1;

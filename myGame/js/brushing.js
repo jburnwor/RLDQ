@@ -71,10 +71,6 @@ brushing.prototype = {
 
 		timeDisplay = new TimeDisplay(stageTimer);
 
-		if (!mainTheme.isPlaying) {
-            mainTheme.play('', 0.1, 0.15, true);
-        }
-
 		this.gumsEmitter = game.add.emitter(0, 0, 200);
 		this.gumsEmitter.makeParticles('blood');			// image used for particles
 		this.gumsEmitter.gravity = 200;
@@ -103,7 +99,7 @@ brushing.prototype = {
 
 		} else if (backForth(game)) {
 			//add points
-			score += 0.1;
+			score += 0.15;
 			if(!brushSFX.isPlaying){
 				brushSFX.play('',0,1,false);
 			}
