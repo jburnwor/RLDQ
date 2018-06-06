@@ -58,7 +58,7 @@ menu.prototype = {
                 music = true;
             }
             
-            game.state.start('brushing');
+            game.state.start('endDay');
 
             console.log('click');
 
