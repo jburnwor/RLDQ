@@ -71,6 +71,10 @@ brushing.prototype = {
 
 		timeDisplay = new TimeDisplay(stageTimer);
 
+		if (!mainTheme.isPlaying) {
+            mainTheme.play('', 0.1, 0.15, true);
+        }
+
 		this.gumsEmitter = game.add.emitter(0, 0, 200);
 		this.gumsEmitter.makeParticles('blood');			// image used for particles
 		this.gumsEmitter.gravity = 200;
