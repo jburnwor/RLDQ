@@ -17,7 +17,7 @@ walking.prototype = {
         this.load.path = 'assets/img/'
         this.load.image('temp', 'playerTemp.png')
         this.load.path = 'assets/img/walking/';
-        this.load.image('player', 'sprite.png')
+        this.load.image('player', 'sprite/charWalk00.png')
         this.load.image('player1', 'sprite/charWalk00.png');
         this.load.image('player2', 'sprite/charWalk01.png');
 

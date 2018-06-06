@@ -53,9 +53,8 @@ menu.prototype = {
         }
 
         function actionOnClick() {
-            if (!music) {
+            if (!mainTheme.isPlaying) {
                 mainTheme.play('', 0.1, 0.15, true);
-                music = true;
             }
             
             game.state.start('endDay');
