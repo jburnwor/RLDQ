@@ -47,10 +47,10 @@ walking.prototype = {
         //create player sprite and all its frames so the frames can be shown later 
         //the animation is done this way currenly to get it working since the 
         //sprites are not currently in a spritesheet or atlas
-        this.player = this.add.sprite(50, 450, 'player');
-        this.playerLeft = this.add.sprite(50, 450, 'player1');
+        this.player = this.add.sprite(50, 420, 'player');
+        this.playerLeft = this.add.sprite(50, 420, 'player1');
         this.playerLeft.alpha = 0;
-        this.playerRight = this.add.sprite(50, 450, 'player2');
+        this.playerRight = this.add.sprite(50, 420, 'player2');
         this.playerRight.alpha = 0;
 
         // this.player.scale.setTo(2, 2);
