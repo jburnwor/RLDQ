@@ -49,6 +49,7 @@ gameOver.prototype = {
         function actionOnClick(){
             score = 0;
             health = 100;
+            day = 1;
             game.state.start('brushing');
 
             console.log('click');
@@ -58,6 +59,7 @@ gameOver.prototype = {
         function toCredits() {
             score = 0;
             health = 100;
+            day = 1;
             game.state.start('credits');
             
 

@@ -16,8 +16,6 @@ endDay.prototype = {
         this.load.image('bgOver', 'gameOver.png');
         this.load.image('credits', 'credits.png');
         this.load.image('playAgain', 'playAgain.png');
-
-        this.load.bitmapFont('font', 'm5x7.png', 'm5x7.xml');
         
 
     },
@@ -29,16 +27,16 @@ endDay.prototype = {
         this.background = this.add.sprite(0, 0, 'bg');
         this.start = game.add.button(game.world.centerX- 80, 300, 'start', actionOnClick, this, 2, 1, 0);
 
-        this.current =game.add.bitmapText(92,25, 'font','Current Score: ' + score,64);
+        this.current =game.add.bitmapText(92,25, 'font','Current Score: ' + Math.floor(score),64);
         this.current.tint = 0x0000ff;
-        this.current = game.add.bitmapText(90,27, 'font','Current Score: ' + score,64);
+        this.current = game.add.bitmapText(90,27, 'font','Current Score: ' + Math.floor(score),64);
 
         reach = score + 500;
-        this.reachText = game.add.bitmapText(32,102, 'font','Score to reach day ' +day+': \n' + reach,64);
+        this.reachText = game.add.bitmapText(32,102, 'font','Score to reach day ' +(day + 1)+': \n' + Math.floor(reach),64);
         this.reachText.align = 'center';
         this.reachText.tint = 0x0000ff;
 
-        this.reachText = game.add.bitmapText(30,100, 'font','Score to reach day ' +day+': \n' + reach,64);
+        this.reachText = game.add.bitmapText(30,100, 'font','Score to reach day ' +(day + 1)+': \n' + Math.floor(reach),64);
         this.reachText.align = 'center';
 
         this.start.onInputOver.add(over, this);
@@ -97,6 +95,8 @@ endDay.prototype = {
         function actionOnClick(){
             score = 0;
             health = 100;
+            reach = 0;
+            day = 1;
             game.state.start('brushing');
 
             console.log('click');
@@ -106,16 +106,18 @@ endDay.prototype = {
         function toCredits() {
             score = 0;
             health = 100;
+            reach = 0;
+            day = 1;
             game.state.start('credits');
             
 
         }
 
 
-        this.current =game.add.bitmapText(88,185, 'font','Did not  the\nrequired score and\nran out of money',64);
+        this.current =game.add.bitmapText(74,187, 'font','Did not reach the\nrequired score and\nran out of money',64);
         this.current.tint = 0x0000ff;
         this.current.align = 'center';
-        this.current = game.add.bitmapText(86,187, 'font','Did not reach the\nrequired score and\nran out of money',64);
+        this.current = game.add.bitmapText(72,185, 'font','Did not reach the\nrequired score and\nran out of money',64);
         this.current.align = 'center';
     }
 }
