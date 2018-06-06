@@ -6,6 +6,9 @@ stamping.prototype = {
 		this.load.path = 'assets/img/stampingPapers/';
 
 		this.load.atlas('stampAtlas','stampAtlas.png','stampAtlas.json');
+		this.load.image('redReturn','stamppadRed.png');
+		this.load.image('greenReturn','stamppadGreen.png');
+
 
 		this.load.path = 'assets/audio/';
 		this.load.audio('stamped',['stamp.ogg']);
@@ -45,7 +48,8 @@ stamping.prototype = {
 		stamp.input.boundsRect = bg.getBounds();
 
 		//create an area for the stamp
-		returnStamp = new Phaser.Rectangle(stamp.body.x,stamp.body.y,stamp.width,stamp.height);
+		returnStamp = game.add.sprite(stamp.body.x-5,stamp.body.y+38,'greenReturn');
+		game.physics.arcade.enable(returnStamp);
     	
 
 		//add bin for finished stamps
@@ -76,8 +80,7 @@ stamping.prototype = {
 		this.scoreAble = true;
 		//condition to if the player scores or loses health
 		this.returned = true;
-		//the color the return area
-		this.returnColor = 'rgba(0,255,0,20)';
+		
 
 		//to display the score and Health
 		scoreDisplay = new Score();
@@ -91,15 +94,15 @@ stamping.prototype = {
 			mainTheme.stop();
 		}
 		
-		if(returnStamp.intersects(stamp.getBounds())){
+		if(game.physics.arcade.overlap(stamp,returnStamp)){
 			//if the stamp is back change return area to green
-			this.returnColor = 'rgba(0,255,0,20)';
+			returnStamp.loadTexture('greenReturn');
 		  	this.returned = true;
 		}
 
 		else{
 			//if not make it red
-			this.returnColor = 'rgba(255,0,0,20)';
+			returnStamp.loadTexture('redReturn');
 			this.returned = false;
 		}
 
@@ -117,10 +120,10 @@ stamping.prototype = {
 		}
 	},
 
-	render: function(){
-		//we use this to draw the return area
-		game.debug.geom(returnStamp,this.returnColor,false);
-	},
+	// render: function(){
+	// 	//we use this to draw the return area
+	// 	game.debug.geom(returnStamp,this.returnColor,false);
+	// },
 
 	createSheet: function(){
 		//this is if else chain changes the current sprite of the paper stack and the paper sheet
