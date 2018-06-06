@@ -71,6 +71,10 @@ brushing.prototype = {
 
 		timeDisplay = new TimeDisplay(stageTimer);
 
+		if (!mainTheme.isPlaying) {
+            mainTheme.play('', 0.1, 0.15, true);
+        }
+
 		this.gumsEmitter = game.add.emitter(0, 0, 200);
 		this.gumsEmitter.makeParticles('blood');			// image used for particles
 		this.gumsEmitter.gravity = 200;
@@ -84,6 +88,7 @@ brushing.prototype = {
 		//send to game over if health is 0
 		if(health < 1){
 			game.state.start('gameOver');
+			mainTheme.stop();
 		}
 
 		//if the mouse is moving back and forth, give points
