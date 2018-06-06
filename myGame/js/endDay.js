@@ -27,9 +27,9 @@ endDay.prototype = {
         this.background = this.add.sprite(0, 0, 'bg');
         this.start = game.add.button(game.world.centerX- 80, 300, 'start', actionOnClick, this, 2, 1, 0);
 
-        this.current =game.add.bitmapText(92,25, 'font','Current Score: ' + Math.floor(score),64);
+        this.current =game.add.bitmapText(92,27, 'font','Current Score: ' + Math.floor(score),64);
         this.current.tint = 0x0000ff;
-        this.current = game.add.bitmapText(90,27, 'font','Current Score: ' + Math.floor(score),64);
+        this.current = game.add.bitmapText(90,25, 'font','Current Score: ' + Math.floor(score),64);
 
         reach = score + 500;
         this.reachText = game.add.bitmapText(32,102, 'font','Score to reach day ' +(day + 1)+': \n' + Math.floor(reach),64);
