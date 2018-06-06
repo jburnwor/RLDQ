@@ -88,6 +88,7 @@ stamping.prototype = {
 		//send to game over if health is 0
 		if(health < 1){
 			game.state.start('gameOver');
+			mainTheme.stop();
 		}
 		
 		if(returnStamp.intersects(stamp.getBounds())){

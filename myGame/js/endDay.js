@@ -64,6 +64,7 @@ endDay.prototype = {
 
         }
     }else{
+        mainTheme.stop();
         this.background = this.add.sprite(0, 0, 'bgOver');
 
         this.playAgain = game.add.button(game.world.centerX - 95, 350, 'playAgain', actionOnClick, this, 2, 1, 0);
