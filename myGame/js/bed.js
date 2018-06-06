@@ -121,6 +121,12 @@ bed.prototype = {
 
 	},
 	update: function(){
+		//send to game over if health is 0
+		if(health < 1){
+			game.state.start('gameOver');
+			mainTheme.stop();
+		}
+		
 		//if they need to reset the state
 		this.reset();
 		//once the lights turn off allow them to move and show the controls
@@ -163,7 +169,7 @@ bed.prototype = {
 		//flag the timer
 		off = true;
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000,function(){console.log('fired'), game.state.start('brushing',true,false)},game);
+		stageTimer.add(30000,function(){console.log('fired'), game.state.start('endDay',true,false)},game);
 		stageTimer.start();
 
 		//show our UI
@@ -176,8 +182,14 @@ bed.prototype = {
 	collide: function(){
 		if(game.physics.arcade.overlap(player,bed)){
 			console.log('yay');
-			game.state.start('brushing');
+			game.state.start('endDay');
 			score+=100;
+			if(health<100){
+				health+=20;
+				if(health>100){
+					health = 100;
+				}
+			}
 		}
 		if(game.physics.arcade.collide(player, things)){
 			health-=2;

@@ -31,6 +31,7 @@ brushing.prototype = {
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 
 		brushSFX = game.add.audio('brushSFX');
+		damagedSound = game.add.audio('damaged');
 
 		//create the background
 		var bg = this.add.sprite(0, 0, 'bg');
@@ -49,8 +50,6 @@ brushing.prototype = {
 		}
 
 		mouth = this.add.sprite(0, 0, 'mouth');
-		//mouth.enableBody = true;
-		//	mouth.body.immovable = true;
 
 		brush = this.add.sprite(200, 200, 'brush');
 		game.physics.enable(brush);
@@ -67,7 +66,7 @@ brushing.prototype = {
 
 		//timer for the stage
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000, function () { console.log('timer'), game.state.start('stamping') }, game);
+		stageTimer.add(30000, function () { console.log('timer'), game.state.start('walking') }, game);
 		stageTimer.start();
 
 		timeDisplay = new TimeDisplay(stageTimer);
@@ -75,12 +74,24 @@ brushing.prototype = {
 		this.gumsEmitter = game.add.emitter(0, 0, 200);
 		this.gumsEmitter.makeParticles('blood');			// image used for particles
 		this.gumsEmitter.gravity = 200;
+
+		mouse = this.add.image(game.world.centerX,game.world.height-55,'tutorialAtlas','sideways00');
+		mouse.anchor.setTo(0.5,0);
+		mouse.animations.add('mouseTutorial',Phaser.Animation.generateFrameNames('sideways',0, 7, '',2), 8 ,true);
+		mouse.animations.play('mouseTutorial');
 	},
 	update: function () {
+		//send to game over if health is 0
+		if(health < 1){
+			game.state.start('gameOver');
+			mainTheme.stop();
+		}
+
 		//if the mouse is moving back and forth, give points
 		if (backForth(game) && !(allTeeth.intersects(brush.getBounds()))) {
 			health -= 0.5;
 
+			damagedSound.play('',0,1,false);
 
 			this.gumsEmitter.x = brush.x;
 			this.gumsEmitter.y = brush.y;
@@ -88,7 +99,10 @@ brushing.prototype = {
 
 		} else if (backForth(game)) {
 			//add points
-			score += 0.1;
+			score += 0.15;
+			if(!brushSFX.isPlaying){
+				brushSFX.play('',0,1,false);
+			}
 
 		}
 		//move brush to pointer
@@ -102,13 +116,19 @@ brushing.prototype = {
 		}
 
 		lastPos = game.input.speed.x;
+
+		//kill the tutorial animation
+		if(stageTimer.duration<=25000){
+			mouse.kill();
+		}
+
 	},
 
 	render: function () {
 
 		//game.debug.bodyInfo(brush, 32, 32);
 
-		game.debug.body(brush);
+		//game.debug.body(brush);
 
 		//game.debug.geom(allTeeth, '#ff0000', false);
 
@@ -163,20 +183,15 @@ function backForth(game) {
 			return false;
 		} else {
 			//points
-			if(!brushSFX.isPlaying){
-				brushSFX.play('',0,1,false);
-			}
 			return true;
 		}
+
 	} else if (lastPos < 0) {
 		if (game.input.speed.x < 0) {
 			//no points
 			return false;
 		} else {
 			//points
-			if(!brushSFX.isPlaying){
-				brushSFX.play('',0,1,false);
-			}
 			return true;
 		}
 	}
