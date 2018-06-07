@@ -111,8 +111,10 @@ bed.prototype = {
 			memorizeThis = game.add.bitmapText(game.world.centerX, 80,'font', 'Memorize the room layout',48);
 			memorizeThis.anchor.setTo(0.5,0);
 		}
-		resetText = game.add.bitmapText(game.world.centerX, game.world.height-48,'font', 'Trapped? Press \'R\' to reset',48);
-		resetText.anchor.setTo(0.5,0);
+		if(resetCounter<3){
+			resetText = game.add.bitmapText(game.world.centerX, game.world.height-48,'font', 'Trapped? Press \'R\' to reset',48);
+			resetText.anchor.setTo(0.5,0);
+		}
 
 		
 		//boolean to make sure the player can't move if the lights are still on
@@ -128,7 +130,9 @@ bed.prototype = {
 		}
 		
 		//if they need to reset the state
-		this.reset();
+		if(resetCounter<3){
+			this.reset();
+		}
 		//once the lights turn off allow them to move and show the controls
 		if(off){
 			this.move();
@@ -169,7 +173,7 @@ bed.prototype = {
 		//flag the timer
 		off = true;
 		stageTimer = game.time.create(false);
-		stageTimer.add(30000,function(){console.log('fired'), game.state.start('endDay',true,false)},game);
+		stageTimer.add(30000,function(){console.log('fired'), game.state.start('endDay',true,false), resetCounter = 0;},game);
 		stageTimer.start();
 
 		//show our UI
@@ -183,6 +187,7 @@ bed.prototype = {
 		if(game.physics.arcade.overlap(player,bed)){
 			console.log('yay');
 			game.state.start('endDay');
+			resetCounter = 0;
 			score+=100;
 			if(health<100){
 				health+=20;
@@ -213,6 +218,7 @@ bed.prototype = {
 	reset: function(){
 		if(reset.justPressed()){
 			game.state.start('bed');
+			resetCounter++;
 		}
 	}
 }

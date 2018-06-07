@@ -6,6 +6,7 @@ var health = 100;
 var day = 1;
 var music = false;
 var reach = 0;
+var resetCounter = 0;
 window.onload = function () {
 	game = new Phaser.Game(512, 512, Phaser.AUTO);
 	// states

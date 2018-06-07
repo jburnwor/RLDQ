@@ -86,6 +86,7 @@ stamping.prototype = {
 		scoreDisplay = new Score();
 		healthBG = new HealthBG();
 		healthDisplay = new Health();
+		timeDisplay = new TimeDisplay(stageTimer);
 	},
 	update: function(){
 		//send to game over if health is 0
