@@ -11,6 +11,8 @@ var walking = function () {
     this.playerRight;
     this.bg;
     this.impact;
+    this.hit;
+    this.hitTween;
 }
 walking.prototype = {
     preload: function () {
@@ -22,6 +24,10 @@ walking.prototype = {
         this.load.image('player2', 'sprite/charWalk01.png');
 
         this.load.image('bg', 'walking.png');
+
+        this.load.image('hit1', 'sprite/hitEffect/suprise1.png');
+        this.load.image('hit2', 'sprite/hitEffect/suprise2.png');
+        this.load.image('hit3', 'sprite/hitEffect/surprise3.png');
 
         this.load.path = 'assets/img/brushing/'
         this.load.image('blood', 'blood.png');
@@ -55,10 +61,10 @@ walking.prototype = {
         this.playerRight = this.add.sprite(50, 420, 'player2');
         this.playerRight.alpha = 0;
 
-        instruction = this.add.sprite(game.world.centerX,game.world.centerY,'tutorialAtlas','instruction00');
-		instruction.anchor.setTo(0.5,0.5);
-		instruction.animations.add('tutorial',Phaser.Animation.generateFrameNames('instruction',0, 1,'',2), 1 ,true);
-		instruction.animations.play('tutorial');
+        instruction = this.add.sprite(game.world.centerX, game.world.centerY, 'tutorialAtlas', 'instruction00');
+        instruction.anchor.setTo(0.5, 0.5);
+        instruction.animations.add('tutorial', Phaser.Animation.generateFrameNames('instruction', 0, 1, '', 2), 1, true);
+        instruction.animations.play('tutorial');
 
         //set up emitter to indicate when the player double presses a direction and losses health
         this.impact = game.add.emitter(0, 0, 50);
@@ -70,6 +76,23 @@ walking.prototype = {
         this.impact.x = this.player.x + 2;
         this.impact.y = this.player.y + 30;
 
+        this.hit = game.add.emitter(70, 418, 1);
+        this.hit.makeParticles(['hit1', 'hit2', 'hit3'], 1, 3);
+        //this.hit.gravity = 1;
+        this.hit.forEach(function (particle) {
+            particle.body.allowGravity = false;
+            console.log('disable grav');
+        }, this);
+
+        this.hit.minRotation = 0;
+        this.hit.maxRotation = 0;
+        this.hit.minParticleSpeed.setTo(0, 0);
+        this.hit.maxParticleSpeed.setTo(0, 0);
+
+        /* this.hit = this.add.sprite(53, 418, 'hit');
+        this.hit.alpha = 0;
+        this.hitTween = this.add.tween(this.hit);
+ */
 
         //to display the score
         scoreDisplay = new Score();
@@ -86,11 +109,11 @@ walking.prototype = {
     },
     update: function () {
         //send to game over if health is 0
-		if(health < 1){
+        if (health < 1) {
             game.state.start('gameOver');
             mainTheme.stop();
         }
-        
+
         //if else checks for pressing left or right
 
         //check when both left and right is pressed and take away health
@@ -101,12 +124,17 @@ walking.prototype = {
             if (!this.bothJustPressed) {
                 console.log('bad both');
                 health -= 3;
+                this.hit.start(false, 100, 50, 1);
+                /* if(!this.hitTween.isRunning){
+                this.hitTween.to( { alpha: 1 }, 500, "Linear", true);
+                this.hitTween.yoyo(true, 500);
+                } */
                 //set player frame to show
                 this.player.alpha = 1;
                 this.playerLeft.alpha = 0;
                 this.playerRight.alpha = 0;
                 this.bg.tilePosition.x -= 8;
-                damagedSound.play('',0,1,false);
+                damagedSound.play('', 0, 1, false);
             }
 
             //reset booleans 
@@ -131,15 +159,20 @@ walking.prototype = {
                 score += 0.15;
                 //move background 
                 this.bg.tilePosition.x -= 8;
-                stepSound.play('',0,0.5,false);
+                stepSound.play('', 0, 0.5, false);
             } else if (this.leftJustPressed) {
                 this.bg.tilePosition.x -= 8;
                 console.log('second left');
                 //set off the emitter
                 this.impact.alpha = 1;
                 this.impact.start(true, 100, null, 10);	// (explode, lifespan, freq, quantity)
+                this.hit.start(false, 100, 50, 1);
                 health -= 3;
-                damagedSound.play('',0,1,false);
+                /* if(!this.hitTween.isRunning){
+                this.hitTween.to( { alpha: 1 }, 500, "Linear", true);
+                this.hitTween.yoyo(true, 500);
+                } */
+                damagedSound.play('', 0, 1, false);
 
             }
 
@@ -161,14 +194,19 @@ walking.prototype = {
                 this.playerLeft.alpha = 0;
                 this.playerRight.alpha = 1;
                 this.bg.tilePosition.x -= 8;
-                stepSound.play('',0,0.7,false);
+                stepSound.play('', 0, 0.7, false);
             } else if (this.rightJustPressed) {
                 this.bg.tilePosition.x -= 8;
                 console.log('double right')
                 this.impact.alpha = 1;
                 this.impact.start(true, 100, null, 10);	// (explode, lifespan, freq, quantity)
+                this.hit.start(false, 100, 50, 1);
                 health -= 3;
-                damagedSound.play('',0,1,false);
+                /* if(!this.hitTween.isRunning){
+                this.hitTween.to( { alpha: 1 }, 500, "Linear", true);
+                this.hitTween.yoyo(true, 500);
+                } */
+                damagedSound.play('', 0, 1, false);
             }
             //reset booleans
             if (this.leftJustPressed) {
@@ -180,9 +218,9 @@ walking.prototype = {
             this.rightJustPressed = true;
         }
 
-        if(stageTimer.duration<=25000){
-			instruction.kill();
-		}
+        if (stageTimer.duration <= 25000) {
+            instruction.kill();
+        }
 
         function fadeImpact() {
 
