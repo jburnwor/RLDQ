@@ -73,6 +73,14 @@ dishes.prototype = {
 		this.handsEmitter = game.add.emitter(0, 0, 200);
 		this.handsEmitter.makeParticles('blood');			// image used for particles
 		this.handsEmitter.gravity = 800;
+
+		mouse = this.add.image(game.world.centerX,game.world.height-55,'tutorialAtlas','sideways00');
+		mouse.anchor.setTo(0.5,0);
+		mouse.animations.add('mouseTutorial',Phaser.Animation.generateFrameNames('sideways',0, 7, '',2), 8 ,true);
+		mouse.animations.play('mouseTutorial');
+
+
+
 	},
 	update: function () {
 		//send to game over if health is 0
@@ -123,6 +131,11 @@ dishes.prototype = {
 			}
 			knifeGrime.alpha -= 0.01;
 			console.log('yes');
+		}
+
+		//kill the tutorial animation
+		if(stageTimer.duration<=25000){
+			mouse.kill();
 		}
 
 
