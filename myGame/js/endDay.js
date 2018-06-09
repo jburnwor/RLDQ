@@ -31,7 +31,7 @@ endDay.prototype = {
         this.current.tint = 0x0000ff;
         this.current = game.add.bitmapText(90,25, 'font','Current Score: ' + Math.floor(score),64);
 
-        reach = score + 500;
+        reach = score + 450;
         this.reachText = game.add.bitmapText(32,102, 'font','Score to reach day ' +(day + 1)+': \n' + Math.floor(reach),64);
         this.reachText.align = 'center';
         this.reachText.tint = 0x0000ff;
@@ -58,6 +58,7 @@ endDay.prototype = {
         }
 
         function actionOnClick(){
+            day +=1;
             game.state.start('brushing');
 
             console.log('click');

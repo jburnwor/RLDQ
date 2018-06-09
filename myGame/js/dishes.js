@@ -79,7 +79,7 @@ dishes.prototype = {
 		mouse.animations.add('mouseTutorial',Phaser.Animation.generateFrameNames('sideways',0, 7, '',2), 8 ,true);
 		mouse.animations.play('mouseTutorial');
 
-
+		
 
 	},
 	update: function () {
@@ -98,7 +98,7 @@ dishes.prototype = {
 		cut.y = knife.y + 30;
 
 		//make knife float from left to right and loop back to the left after it goes off screen
-		knife.x += 1;
+		knife.x += 2;
 		if (knife.x > (game.width + knife.width / 4)) {
 			knife.x = 0 - knife.width;
 
@@ -129,7 +129,7 @@ dishes.prototype = {
 			if(!washingSound.isPlaying){
 				washingSound.play('',0,1,false);
 			}
-			knifeGrime.alpha -= 0.01;
+			knifeGrime.alpha -= 0.02;
 			console.log('yes');
 		}
 
