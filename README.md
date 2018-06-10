@@ -9,7 +9,7 @@ In RLDQ players are tasked with living a day-to-day of an average computer scien
 ## Contributors
 - Jihong Min | Artist
 - Yash Solanki | Developer & Sound Designer
-- Jacob Burnwor | Developer
+- Jacob Burnworth | Developer
 ---
 ## Other Special Thanks
 - Darius Rudominer | Music
