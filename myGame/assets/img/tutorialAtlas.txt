@@ -1,0 +1,16 @@
+sideways04,0,534,258,66
+sideways05,0,201,258,66
+sideways06,0,0,258,66
+sideways07,0,467,258,66
+sideways00,0,335,258,66
+sideways01,0,67,258,66
+sideways02,0,268,258,66
+sideways03,0,134,258,66
+BACKSPACE,259,335,96,32
+ENTER,259,368,96,32
+
+WASD0,0,402,162,64
+
+WASD1,163,402,162,64
+instruction00,259,467,110,35
+instruction01,259,0,110,35

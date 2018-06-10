@@ -17,14 +17,13 @@ alarmClock.prototype = {
 	preload: function(){
 		game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
 		this.load.path = 'assets/img/alarmClock/';
-		this.load.image('clock','desk.png');
-		this.load.image('finger','fingerTemp.png');
-		this.load.image('bg','bg.png');
-		this.load.image('lamp','lamp.png');
-		this.load.image('button','masterButton.png');	
+
+		this.load.atlas('alarmAtlas','alarmAtlas.png','alarmAtlas.json');
 
 		this.load.path = 'assets/audio/';
 		this.load.audio('click',['click.ogg']);
+		this.load.path = 'assets/fonts/';
+		this.load.bitmapFont('font','m5x7.png','m5x7.xml');
 	},
 	create: function(){
 		game.physics.startSystem(Phaser.Physics.ARCADE);	
@@ -34,118 +33,165 @@ alarmClock.prototype = {
 		stageTimer.add(30000,this.checkTime,this);
 		stageTimer.start();
 
+		
+		//we use this to make sure their score doesn't dip below their previous score if they fail
 		storedScore = score;
-		console.log(storedScore);
 
+		//add 300 to the score at the start then decrease it, 
 		score+=300;
 		scoreTimer = game.time.create(false);
 		scoreTimer.loop(100,function(){score-=1},this);
 		scoreTimer.start();
 
-		
-		bg = this.add.sprite(0,0,'bg');
+		//add background
+		bg = this.add.sprite(0,0,'alarmAtlas','bg');
 
 
 		//add button to top of clock
-		button = this.add.sprite(game.world.centerX-50,game.world.centerY-65,'button');
+		button = this.add.sprite(game.world.centerX-50,game.world.centerY-65,'alarmAtlas','masterButton');
 		game.physics.arcade.enable(button);
 		button.anchor.setTo(0.5,0.5);
 
-		confirmButton = this.add.sprite(game.world.centerX+50,game.world.centerY-65,'button');
+		//add a button to progress to next state if they get to 8am early
+		confirmButton = this.add.sprite(game.world.centerX+50,game.world.centerY-65,'alarmAtlas','masterButton');
 		game.physics.arcade.enable(confirmButton);
 		confirmButton.anchor.setTo(0.5,0.5);
 		confirmButton.inputEnabled = true;
 		confirmButton.events.onInputDown.add(this.checkTime,this);
 
 		//add clock
-		clock = this.add.sprite(game.world.centerX,game.world.centerY,'clock');
+		clock = this.add.sprite(game.world.centerX,game.world.centerY,'alarmAtlas','desk');
 		clock.anchor.setTo(0.5,0.5);
 
-		lamp = this.add.sprite(0,0,'lamp');
+		//add lamp image
+		lamp = this.add.image(0,0,'alarmAtlas','lamp');
 		
-		//text for now
+		//text and variables for the clock display
 		time = 12;
 		dayTrack = 0;
 		amPM = ['AM','PM'];
-		clockTime = this.add.text(clock.centerX+110,clock.centerY-32,"00:00   " + amPM[0],{font: 'Orbitron',fontSize: '36px', fill: 'White'});
+		clockTime = game.add.bitmapText(clock.centerX+112,clock.centerY-24,"font", '00:00 ' + amPM[0], 78);
 		clockTime.anchor.setTo(1,0);
 
-		//finger
-		finger = this.add.sprite(game.world.centerX-50,0,'finger');
+		//finger that the player drags
+		finger = this.add.sprite(game.world.centerX-50,0,'alarmAtlas','finger');
 		finger.anchor.setTo(0.5,0.5);
 		finger.inputEnabled = true; 				//Enables input (mouse click) for the finger
+		game.physics.arcade.enable(finger);
 		//it can be dragged arround by the mouse, setting the value changes if the object will snap to center of mouse
 		finger.input.enableDrag(false);
+		//restrict the finger movement to only up and down within specific bounds
 		finger.input.allowHorizontalDrag = false;
-		game.physics.arcade.enable(finger);
-		fingerBounds = new Phaser.Rectangle(finger.x-(finger.width/2),0,finger.width,button.y);
+		fingerBounds = new Phaser.Rectangle(finger.x-(finger.width/2),-75,finger.width,button.y+75);
 		finger.input.boundsRect = fingerBounds;
 
+		//show instuctional arrows on the players first drag
+		arrow = this.add.sprite(button.x,button.y-50,'alarmAtlas','instructionArrow001');
+		arrow.anchor.setTo(0.5,0.5);
+		arrow.animations.add('arrow',Phaser.Animation.generateFrameNames('instructionArrow',1, 4, '',3), 8 ,true);
+		arrow.animations.play('arrow');
 
+		if(day==1){
+				instuctionText = game.add.bitmapText(game.world.centerX, game.world.height-128,'font', 'Get to 8 AM',72);
+				instuctionText.anchor.setTo(0.5,0);
+		}
+	
+		//to flag the instuctional arrows to remove it
+		tryClick = true;
+
+		//add audio clips
 		clickSound = game.add.audio('click');
 		damagedSound = game.add.audio('damaged');
 
 		//variables that we want outside of updateClock so they don't reset
+
+		//to flag the collsion for dragging
 		overlapped = false;
+		//wrap the time from 12am-12pm
 		wrapped = true;
+
 		//since the event doesn't start the first time we'll just trigger it manually
 		doOnce = true;
 
 		//to display the score
 		scoreDisplay = new Score();
+		healthBG = new HealthBG();
+    	healthDisplay = new Health();
+    	timeDisplay = new TimeDisplay(stageTimer);
 		
 
 	},
 	update: function(){
+		//send to game over if health is 0
+		if(health < 1){
+			game.state.start('gameOver');
+		}
+		
+		//fire the first event manually to make everything work
 		if(doOnce){
 			this.updateClock();
 			doOnce = false;
 		}
+
+
+		if((time == 8) && dayTrack%2 == 0){
+			arrow.x = confirmButton.x;
+			arrow.alpha = 1;
+		}
+
+		//if they dragged the finger make it vanish
+		else if(!tryClick){
+			arrow.alpha = 0;
+		}
+
 		this.buttonPress();
 
 	},
-	render: function(){
-		//game.debug.body(button);
-		//game.debug.body(finger);
-		//game.debug.geom(fingerBounds);
-	},
 
 	updateClock: function(){
+		//update the clock display and variables
+
+		//flag the collision
 		if(!overlapped){
 			overlapped = true;
+
+			//increase the time
 			if(!doOnce){
 					time = time + game.rnd.integerInRange(1,4);
+					//flag the instructional arrow to 
+					if(tryClick){
+						tryClick = false;
+						arrow.alpha = 0;
+					}
 					clickSound.play('',0,1,false);		
 			}
+			//to keep the time display and AM PM from being wrong
 			if(time==12){
 				if(!doOnce){
 					dayTrack++;
 				}
 					wrapped = true;
-					console.log(wrapped);
 			}
 			else if(time>12){
-				console.log(wrapped);
 					if(!wrapped){
 						dayTrack++;
 					}
 					time = time%12;
 					wrapped = false;
-				console.log(wrapped);
 			}
 
+			//display the time on the clock
 			if(time<10){
-				clockTime.text = "0"+time+":00   " + amPM[dayTrack%2];
-				console.log(time);
+				clockTime.text ="0"+time+":00 " + amPM[dayTrack%2];
 			}
 			else{
-				clockTime.text = time +":00   " + amPM[dayTrack%2];
-				console.log(time);
+				clockTime.text = time +":00 " + amPM[dayTrack%2];
 			}
 		}
 	},
 
 	buttonPress: function(){
+		//check the collision of the finger
 		if(game.physics.arcade.collide(finger,button)){
 			this.updateClock();	
 		}

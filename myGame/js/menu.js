@@ -10,11 +10,14 @@ menu.prototype = {
         //load images
         this.load.path = 'assets/img/titleScreen/';
         this.load.image('bg', 'title.png');
-        this.load.image('settings', 'settings.png');
         this.load.image('start', 'start.png');
-        this.load.image('exit', 'exit.png');
-        this.load.image('selector', 'selector.png');
-
+        this.load.image('credits', 'credits.png');
+        this.load.atlas('tutorialAtlas', '../tutorialAtlas.png', '../tutorialAtlas.json');
+        this.load.path = 'assets/fonts/';
+        this.load.bitmapFont('font', 'm5x7.png', 'm5x7.xml');
+        this.stage.disableVisibilityChange = true;
+        this.load.audio('mainTheme', '../audio/mainTheme.mp3');
+        this.load.audio('damaged', ['../audio/damaged.ogg']);
     },
 
     create: function () {
@@ -27,17 +30,13 @@ menu.prototype = {
         this.start.onInputOut.add(out, this);
         this.start.onInputUp.add(up, this);
 
-        this.settings = game.add.button(game.world.centerX - 95, 350, 'settings', nothing, this, 2, 1, 0);
+        this.credits = game.add.button(game.world.centerX - 95, 350, 'credits', toCredits, this, 2, 1, 0);
 
-        this.settings.onInputOver.add(over, this);
-        this.settings.onInputOut.add(out, this);
-        this.settings.onInputUp.add(up, this);
+        this.credits.onInputOver.add(over, this);
+        this.credits.onInputOut.add(out, this);
+        this.credits.onInputUp.add(up, this);
 
-        this.exit = game.add.button(game.world.centerX - 95, 400, 'exit', nothing, this, 2, 1, 0);
-
-        this.exit.onInputOver.add(over, this);
-        this.exit.onInputOut.add(out, this);
-        this.exit.onInputUp.add(up, this);
+        mainTheme = game.add.audio('mainTheme');
 
         function up(button) {
             console.log('button )up', arguments);
@@ -54,14 +53,22 @@ menu.prototype = {
         }
 
         function actionOnClick() {
-            game.state.start('brushing');
+            if (!mainTheme.isPlaying) {
+                mainTheme.play('', 0.1, 0.15, true);
+            }
+            
+            game.state.start('endDay');
 
             console.log('click');
 
         }
 
-        function nothing() {
-            //nothing
+        function toCredits() {
+            score = 0;
+            health = 100;
+            game.state.start('credits');
+
+
         }
     }
 
