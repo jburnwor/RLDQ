@@ -49,12 +49,9 @@ walking.prototype = {
 
         //set background as a tilesprite and ajust the size to fit in the screen
         this.bg = game.add.tileSprite(0, 0, 512, 512, 'bg');
-        // this.bg.tileScale.x = 4;
-        // this.bg.tileScale.y = 4;
 
         //create player sprite and all its frames so the frames can be shown later 
-        //the animation is done this way currenly to get it working since the 
-        //sprites are not currently in a spritesheet or atlas
+        //since there are so few animations in this game
         this.player = this.add.sprite(50, 420, 'player');
         this.playerLeft = this.add.sprite(50, 420, 'player1');
         this.playerLeft.alpha = 0;
@@ -68,7 +65,7 @@ walking.prototype = {
 
         //set up emitter to indicate when the player double presses a direction and losses health
         this.impact = game.add.emitter(0, 0, 50);
-        this.impact.makeParticles('temp');			// image used for particles
+        this.impact.makeParticles('temp');		
         this.impact.gravity = 800;
         this.impact.minParticleScale = 0.1;
         this.impact.maxParticleScale = 0.1;
@@ -76,9 +73,9 @@ walking.prototype = {
         this.impact.x = this.player.x + 2;
         this.impact.y = this.player.y + 30;
 
+        //set up particles for hit indications for the sprite
         this.hit = game.add.emitter(70, 418, 1);
         this.hit.makeParticles(['hit1', 'hit2', 'hit3'], 1, 3);
-        //this.hit.gravity = 1;
         this.hit.forEach(function (particle) {
             particle.body.allowGravity = false;
             console.log('disable grav');
@@ -88,11 +85,6 @@ walking.prototype = {
         this.hit.maxRotation = 0;
         this.hit.minParticleSpeed.setTo(0, 0);
         this.hit.maxParticleSpeed.setTo(0, 0);
-
-        /* this.hit = this.add.sprite(53, 418, 'hit');
-        this.hit.alpha = 0;
-        this.hitTween = this.add.tween(this.hit);
- */
 
         //to display the score
         scoreDisplay = new Score();
@@ -125,19 +117,16 @@ walking.prototype = {
                 console.log('bad both');
                 health -= 3;
                 this.hit.start(false, 100, 50, 1);
-                /* if(!this.hitTween.isRunning){
-                this.hitTween.to( { alpha: 1 }, 500, "Linear", true);
-                this.hitTween.yoyo(true, 500);
-                } */
                 //set player frame to show
                 this.player.alpha = 1;
                 this.playerLeft.alpha = 0;
                 this.playerRight.alpha = 0;
+                //move the screen
                 this.bg.tilePosition.x -= 8;
                 damagedSound.play('', 0, 1, false);
             }
 
-            //reset booleans 
+            //reset booleans for checking input
             if (this.rightJustPressed) {
                 this.rightJustPressed = false;
             } else if (this.leftJustPressed) {
@@ -166,12 +155,9 @@ walking.prototype = {
                 //set off the emitter
                 this.impact.alpha = 1;
                 this.impact.start(true, 100, null, 10);	// (explode, lifespan, freq, quantity)
+                //add in emitter for player losing health
                 this.hit.start(false, 100, 50, 1);
                 health -= 3;
-                /* if(!this.hitTween.isRunning){
-                this.hitTween.to( { alpha: 1 }, 500, "Linear", true);
-                this.hitTween.yoyo(true, 500);
-                } */
                 damagedSound.play('', 0, 1, false);
 
             }
@@ -202,10 +188,6 @@ walking.prototype = {
                 this.impact.start(true, 100, null, 10);	// (explode, lifespan, freq, quantity)
                 this.hit.start(false, 100, 50, 1);
                 health -= 3;
-                /* if(!this.hitTween.isRunning){
-                this.hitTween.to( { alpha: 1 }, 500, "Linear", true);
-                this.hitTween.yoyo(true, 500);
-                } */
                 damagedSound.play('', 0, 1, false);
             }
             //reset booleans

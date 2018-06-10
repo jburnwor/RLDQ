@@ -17,8 +17,10 @@ gameOver.prototype = {
 
     create: function () {
 
+        //add in background
         this.background = this.add.sprite(0, 0, 'bg');
 
+        //show the score and add in buttons to play again and get to credits
         this.current =game.add.bitmapText(172,27, 'font','Score: ' + Math.floor(score),64);
         this.current.tint = 0x0000ff;
         this.current = game.add.bitmapText(170,25, 'font','Score: ' + Math.floor(score),64);
@@ -35,6 +37,7 @@ gameOver.prototype = {
         this.credits.onInputOut.add(out, this);
         this.credits.onInputUp.add(up, this);
 
+        //have hover over color changes for the buttons
         function up(button) {
             console.log('button )up', arguments);
         }
@@ -49,6 +52,7 @@ gameOver.prototype = {
             console.log('button out');
         }
 
+        //set links to other states for the buttons and reset variables
         function actionOnClick(){
             score = 0;
             health = 100;

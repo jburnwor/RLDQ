@@ -24,6 +24,7 @@ menu.prototype = {
 
         this.background = this.add.sprite(0, 0, 'bg');
 
+        //added in buttons to start game and go to credits
         this.start = game.add.button(game.world.centerX - 95, 300, 'start', actionOnClick, this, 2, 1, 0);
 
         this.start.onInputOver.add(over, this);
@@ -38,6 +39,7 @@ menu.prototype = {
 
         mainTheme = game.add.audio('mainTheme');
 
+        //have checks to so there is a different color when hovered over
         function up(button) {
             console.log('button )up', arguments);
         }
@@ -52,6 +54,7 @@ menu.prototype = {
             console.log('button out');
         }
 
+        //links for buttons and checking variables
         function actionOnClick() {
             if (!mainTheme.isPlaying) {
                 mainTheme.play('', 0.1, 0.15, true);
