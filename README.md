@@ -20,4 +20,4 @@ In RLDQ players are tasked with living a day-to-day of an average computer scien
 ### Hosted at 
 Yash | https://yashimvsolanki.itch.io/rldq-real-life-done-quick    
 Jacob |    
-Jihong |    
+Jihong | https://yuukimin.com/rldq/    
