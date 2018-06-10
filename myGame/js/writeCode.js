@@ -129,7 +129,7 @@ code.prototype = {
 		//move our select cursor and allow it to wrap around the keyboard
 		if(up.justPressed() || upKey.justPressed()){
 			keySound.play('',0,2,false);
-			if(index<13){
+			if(index<=13){
 				index+=13;
 				select.y+=60;
 			}
