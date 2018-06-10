@@ -19,6 +19,10 @@ gameOver.prototype = {
 
         this.background = this.add.sprite(0, 0, 'bg');
 
+        this.current =game.add.bitmapText(172,27, 'font','Score: ' + Math.floor(score),64);
+        this.current.tint = 0x0000ff;
+        this.current = game.add.bitmapText(170,25, 'font','Score: ' + Math.floor(score),64);
+
 
         this.playAgain = game.add.button(game.world.centerX - 95, 300, 'playAgain', actionOnClick, this, 2, 1, 0);
 

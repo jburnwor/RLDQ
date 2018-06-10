@@ -109,7 +109,7 @@ endDay.prototype = {
             score = 0;
             health = 100;
             reach = 0;
-            day = 1;
+            day = 0;
             game.state.start('credits');
             
 
